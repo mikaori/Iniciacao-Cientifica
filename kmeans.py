@@ -61,6 +61,7 @@ def atribuicao():
     distCentroid2 = []
     distCentroid3 = []
     distancias = [distCentroid1, distCentroid2, distCentroid3]
+    
     i=0
     for i<len(distancias):
         for i<len(centroid):
@@ -73,12 +74,13 @@ def atribuicao():
              i+=1
         i+=1
                 
-    j=0
-    for j<len(distCentroid1):
-        copia = distCentroid1[j]
-        if(copia>distCentroid2[j]):
-            copia = cluster2
-        else if (copia>distCentroid3[j]):
-            copia = cluster3
+    p= 0
+    for p<len(distCentroid1):
+        copia = distCentroid1[p]
+        if(copia>distCentroid2[p]):
+            cluster2 = [x(p), y(p),j(p)] #preciso por em que posição ele vai receber?
+        else if (copia>distCentroid3[p]):
+            cluster3 = [x(p), y(p),j(p)]
         else
-            copia = cluster1
+            cluster1 = [x(p), y(p),j(p)]
+        p+=1
