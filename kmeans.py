@@ -41,7 +41,7 @@ def distEuclidiana(a, b):
 
 def main():
     k=3
-    centroids=[SorteiaPontos(), SorteiaPontos(), SorteiaPontos()]
+    centroids=[centroid1=SorteiaPontos(), centroid2= SorteiaPontos(), SorteiaPontos()]
 
     #plotar os centroids
     fig = plt.figure(figsize=(5,5))
@@ -64,9 +64,11 @@ def atribuicao():
     i=0
     for i<len(distancias):
         for i<len(centroid):
-            for i<len(lista):
-                 if (centroids(i)!=lista(i)):
-                        distancias(i) = distEuclidiana(centroids(i), lista(i))
+            for i<len(x):
+                for i<len(y):
+                    for i<len(z):
+                        if(centroid(i)!= x(i), centroid2[2]!=y(i), z(i)
+                                distancias(i) = distEuclidiana(centroids(i), x(i), y(i), z(i)) #como trazer o centroid1?
                  i+=1
              i+=1
         i+=1
