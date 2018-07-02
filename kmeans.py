@@ -52,22 +52,31 @@ def main():
     plt.show();
 
 def atribuicao():
-    clusters = [cluster1,cluster2,cluster3]
+    cluster1 = []
+    cluster2 = [] 
+    cluster3 = []
+    clusters = [cluster1,cluster2,cluster3] 
 
     distCentroid1 = []
     distCentroid2 = []
     distCentroid3 = []
     distancias = [distCentroid1, distCentroid2, distCentroid3]
-    i = 0
+    i=0
     for i<len(distancias):
-        for i<len(lista):
-            for i<len(centroids):
-                if (centroids(i)!=lista(i)):
-                    distancias(i) = distEuclidiana(centroids(i), lista(i))
-                i+=1
-            i+=1
+        for i<len(centroid):
+            for i<len(lista):
+                 if (centroids(i)!=lista(i)):
+                        distancias(i) = distEuclidiana(centroids(i), lista(i))
+                 i+=1
+             i+=1
         i+=1
-
-    for i<len(lista):
-        for i<len(centroids):
-            if (centroids(i)!=lista(i)):
+                
+    j=0
+    for j<len(distCentroid1):
+        copia = distCentroid1[j]
+        if(copia>distCentroid2[j]):
+            copia = cluster2
+        else if (copia>distCentroid3[j]):
+            copia = cluster3
+        else
+            copia = cluster1
