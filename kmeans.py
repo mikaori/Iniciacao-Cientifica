@@ -40,7 +40,7 @@ def distEuclidiana(a, b):
 
 def main():
     k=3
-    centroids=[SorteiaPontos(), SorteiaPontos(), SorteiaPontos()]
+    centroids=[centroid1=SorteiaPontos(), centroid2= SorteiaPontos(), SorteiaPontos()]
 
     #plotar os centroids
     fig = plt.figure(figsize=(5,5))
@@ -51,22 +51,35 @@ def main():
     plt.show();
 
 def atribuicao():
-    clusters = [cluster1,cluster2,cluster3]
+    cluster1 = []
+    cluster2 = [] 
+    cluster3 = []
+    clusters = [cluster1,cluster2,cluster3] 
 
     distCentroid1 = []
     distCentroid2 = []
     distCentroid3 = []
     distancias = [distCentroid1, distCentroid2, distCentroid3]
-    i = 0
+    
+    i=0
     for i<len(distancias):
-        for i<len(lista):
-            for i<len(centroids):
-                if (centroids(i)!=lista(i)):
-                    distancias(i) = distEuclidiana(centroids(i), lista(i))
-                i+=1
-            i+=1
+        for i<len(centroid):
+            for i<len(x):
+                for i<len(y):
+                    for i<len(z):
+                        if(centroid(i)!= x(i), centroid2[2]!=y(i), z(i)
+                                distancias(i) = distEuclidiana(centroids(i), x(i), y(i), z(i)) #como trazer o centroid1?
+                 i+=1
+             i+=1
         i+=1
-
-    for i<len(lista):
-        for i<len(centroids):
-            if (centroids(i)!=lista(i)):
+                
+    p= 0
+    for p<len(distCentroid1):
+        copia = distCentroid1[p]
+        if(copia>distCentroid2[p]):
+            cluster2 = [x(p), y(p),j(p)] #preciso por em que posição ele vai receber?
+        else if (copia>distCentroid3[p]):
+            cluster3 = [x(p), y(p),j(p)]
+        else
+            cluster1 = [x(p), y(p),j(p)]
+        p+=1
