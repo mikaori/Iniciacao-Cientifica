@@ -12,8 +12,7 @@ def insertionSort(v):
         j = i-1 #com quem quero comparar o i - elemento antecessor
         while j>=0 and v[j]>temp:
             v[j+1] = v[j]
-            trocou = True
-            j-=1
+            trocou = Truehmm
         if trocou:
             v[j+1] = temp
         i+=1
@@ -23,18 +22,18 @@ def SorteiaPontos():
     ponto = r.shuffle(lista)
 
 def lerTxt():
-    f = open(os.path.expanduser("dados1.txt"))
-    lines = f.readlines()
+    with open('dados1.csv', 'r') as reader:
+    	tabela = csv.reader(reader, delimiter=',')
 
-    for line in list:
-        x.append(line.split()[0])
-        y.append(line.split()[1])
-        z.append(line.split()[2])
-    f.close()
-    print(x,y,z)
+    	mat_pontos = list()
 
-    plt.plot(x,y,z)
-    plt.show()
+    	for linha in reader:
+    		pontos = linha.split(',')
+    		pontos[2] = pontos[2].strip('\n')
+
+    		mat_pontos.append( pontos )
+
+    	print(mat_pontos)
 
 def distEuclidiana(a, b):
     return(sqrt((a[1]-b[1])**2)+(a[2]-b[2])+a[3]-b[3])
