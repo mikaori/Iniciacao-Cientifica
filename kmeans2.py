@@ -20,7 +20,7 @@ def calcularPontoMedio(lista):
 
     somaColunas=sumColumn(lista)
     for i in range(len(somaColunas)):
-        pontoMedio.append(somaColunas[i]/2)
+        pontoMedio.append(somaColunas[i]/tam)
     return(pontoMedio)
 
 def plotarPontos(df, numero):
@@ -34,10 +34,11 @@ def plotarPontos(df, numero):
 with open('dadosteste.csv', 'r') as reader:
     dados = pd.read_csv('dadosteste.csv', usecols=['p1','p2','p3'])
 centroides= dados.sample(3);
-qualCluster=[]
 
 for t in range(10):
     distancias = [[] for i in range(len(centroides))]
+    newDistancias=[[] for i in range(len(centroides))]
+    cluster1,cluster2, cluster3, fakePoint=[], [], [], []
 
     for j in range (len(centroides)):
         for i in range(len(dados)):
@@ -45,24 +46,21 @@ for t in range(10):
 
     for i in range(len(dados)):
         if distancias[0][i]<distancias[1][i] and distancias[0][i]<distancias[2][i]:
-            qualCluster.append(0)
-        elif distancias[1][i]<distancias[0][i] and distancias[1][i]<distancias[2][i]:
-            qualCluster.append(1)
-        else:
-            qualCluster.append(2)
-
-    cluster1,cluster2, cluster3, fakePoint=[], [], [], []
-
-    for i in range(len(dados)):
-        if qualCluster[i] == 0:
             cluster1.append(dados.loc[i])
-        elif qualCluster[i] == 1:
+        elif distancias[1][i]<distancias[0][i] and distancias[1][i]<distancias[2][i]:
             cluster2.append(dados.loc[i])
         else:
             cluster3.append(dados.loc[i])
 
-fakePoint.append(calcularPontoMedio(cluster1))
-fakePoint.append(calcularPontoMedio(cluster2))
-fakePoint.append(calcularPontoMedio(cluster3))
+    fakePoint.append(calcularPontoMedio(cluster1))
+    fakePoint.append(calcularPontoMedio(cluster2))
+    fakePoint.append(calcularPontoMedio(cluster3))
 
-    print (fakePoint)
+    for j in range(len(fakePoint)):
+        for i in range(len(dados)):
+            newDistancias[j].append(dist_euclidiana(fakePoint.iloc[j],  dados.iloc[i])) #RETORNA 'list' object has no attribute 'iloc'?????PQ SE CENTROIDE TB É list????????
+
+    for i in range(len(newDistancias)):
+        centroides[i].append(min[distancias[0][i]])
+
+print (centroides)
