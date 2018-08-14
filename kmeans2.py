@@ -11,24 +11,16 @@ def dist_euclidiana (ponto1,ponto2):
 		soma += math.pow(ponto1[i] - ponto2[i], 2)
 	return math.sqrt(soma)
 
+def sumColumn(matrix):
+    return np.sum(matrix, axis=0)
+
 def calcularPontoMedio(lista):
-    somaX, somaY, somaZ = 0, 0, 0
-    pontoMedio=[]
+    somaColunas,pontoMedio=[], []
     tam=len(lista)
-    print(lista)
 
-    for i in lista:
-        somaX+=(lista[0][i])
-    for j in lista:
-        somaY+=(lista[1][i])
-    for k in lista:
-        somaZ+=(lista[2][i])
-
-    pontoMedio.append(somaX/tam)
-    pontoMedio.append(somaY/tam)
-    pontoMedio.append(somaZ/tam)
-
-    print(somaX)
+    somaColunas=sumColumn(lista)
+    for i in range(len(somaColunas)):
+        pontoMedio.append(somaColunas[i]/2)
     return(pontoMedio)
 
 def plotarPontos(df, numero):
@@ -39,11 +31,9 @@ def plotarPontos(df, numero):
     plt.show()
 
 
-with open('dados1.csv', 'r') as reader:
-    dados = pd.read_csv('dados1.csv', usecols=['p1','p2','p3'])
-print(1)
+with open('dadosteste.csv', 'r') as reader:
+    dados = pd.read_csv('dadosteste.csv', usecols=['p1','p2','p3'])
 centroides= dados.sample(3);
-print(2)
 qualCluster=[]
 
 for t in range(10):
@@ -71,6 +61,8 @@ for t in range(10):
         else:
             cluster3.append(dados.loc[i])
 
-    fakePoint.append(calcularPontoMedio(cluster1))
-    fakePoint.append(calcularPontoMedio(cluster2))
-    fakePoint.append(calcularPontoMedio(cluster3))
+fakePoint.append(calcularPontoMedio(cluster1))
+fakePoint.append(calcularPontoMedio(cluster2))
+fakePoint.append(calcularPontoMedio(cluster3))
+
+    print (fakePoint)
