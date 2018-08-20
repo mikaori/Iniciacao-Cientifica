@@ -1,6 +1,5 @@
 import csv
 import numpy as np
-import pandas as pd
 import random as r
 import math
 from matplotlib import pyplot as plt
@@ -22,9 +21,8 @@ def sumColumn(matrix):
 def calcularPontoMedio(lista):
     somaColunas,pontoMedio=[], []
     tam=len(lista)
-
-    somaColunas=sumColumn(lista)
-    for i in range(len(somaColunas)):
+    for i in range(2):
+        somaColunas=sumColumn(lista)
         pontoMedio.append(somaColunas[i]/tam)
     return(pontoMedio)
 
@@ -40,10 +38,12 @@ def pontoStringFloat (lista):
     return list(map(float, lista))
 
 def comparaValores(lista, valor):
-	for i in range(len(lista)):
-		if lista[i] == valor:
-			return i;
-	return
+    index = 0;
+    for i in range(len(lista)):
+        if lista[i] == valor:
+            index=i
+    return index
+
 with open('dadosteste.csv', 'r') as arquivo:
     leitor = csv.reader(arquivo, delimiter=',')
     dados = []
@@ -53,11 +53,13 @@ with open('dadosteste.csv', 'r') as arquivo:
     dados = list(map(pontoStringFloat, dados))
     centroides= dados[0:3]
     print ("Centroides ", centroides)
+    contador =0;
 
-for t in range(10):
+for t in range(20):
+    contador=contador +1
     distancias = [[] for i in range(len(centroides))]
     newDistancias=[[] for i in range(len(centroides))]
-    cluster1,cluster2,cluster3,fakePoint, menorValor=[],[],[],[],[]
+    cluster1,cluster2,cluster3,fakePoint=[],[],[],[]
 
     for j in range (len(centroides)):
         for i in range(len(dados)):
@@ -68,26 +70,33 @@ for t in range(10):
             cluster1.append(dados[i])
         elif distancias[1][i]<distancias[0][i] and distancias[1][i]<distancias[2][i]:
             cluster2.append(dados[i])
+            #print(cluster2)
         else:
             cluster3.append(dados[i])
-
+    #print(cluster1)
+    #print(cluster2)
+    #print(cluster3)
     fakePoint.append(calcularPontoMedio(cluster1))
     fakePoint.append(calcularPontoMedio(cluster2))
     fakePoint.append(calcularPontoMedio(cluster3))
-
+    temp = 0;
+    #print (fakePoint)
     for j in range(len(fakePoint)):
         for i in range(len(dados)):
-            newDistancias[j].append(dist_euclidiana(fakePoint[j], dados[i]))
+            temp = dist_euclidiana(fakePoint[j], dados[i])
+            #print (temp)
+            newDistancias[j].append(temp)
 	#Achando os novos centroides
 	#achar o menor valor de cada lista
 	#newDistancia=[[dist ao ponto fake (1)],[dist ao ponto fake (2)],[dist ao ponto fake(3)]]
     for i in range(len(centroides)):
-		centroides[i] = dados[comparaValores(newDistancias, min[newDistancias[i]])] 
+        index = comparaValores(newDistancias[i], min(newDistancias[i]))
+        print (index)
+        centroides[i] = dados[index]
 	#acho o menor valor de cada lista e armazeno em uma lista vai vai conter os 3 menores valores
-		#objetivo: comparar cada valor de menorValor[i] com os valores das 3 listas de newDistancia
+	#objetivo: comparar cada valor de menorValor[i] com os valores das 3 listas de newDistancia
 	#para achar os novos valores de centroides:
- #para cada i faco ele receber o valor do dado no indice encontrado pela funcao comparaValores
-		#envio para a funcao comparaValores
-		#a lista com as novas distancias e o menor valor que encontrei dessa lista para poder entao achar o indice desse menor valor.
+ 	#para cada i faco ele receber o valor do dado no indice encontrado pela funcao comparaValores envio para a funcao comparaValores
+	#a lista com as novas distancias e o menor valor que encontrei dessa lista para poder entao achar o indice desse menor valor.
 
-print (centroides)
+print ("centroides finais: ",centroides, "quantas vezes rodei por aqui: ", contador)
