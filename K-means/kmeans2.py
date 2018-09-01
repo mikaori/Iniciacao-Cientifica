@@ -1,9 +1,7 @@
 import csv
 import numpy as np
-import random as r
 import math
 from matplotlib import pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 def dist_euclidiana (ponto1,ponto2):
 	dim, soma = len(ponto1), 0 #len retorna o número de caracteres de uma string
@@ -26,13 +24,6 @@ def calcularPontoMedio(lista):
 		pontoMedio.append(somaColunas[i]/tam)
 	return(pontoMedio)
 
-def plotarPontos(df, numero):
-	fig = plt.figure()
-	ax = fig.add_subplot(111, projection='3d')
-	ax.scatter(xs=numero.p1, ys=numero.p2, zs=numero.p3, c='r', marker = 'o')
-	ax.scatter(xs=df.p1, ys=df.p2, zs=df.p3, marker= '^')
-	plt.show()
-
 def pontoStringFloat (lista):
 	return list(map(float, lista))
 
@@ -53,13 +44,13 @@ def lerArquivo(arquivo):
 		dados = list(map(pontoStringFloat, dados))
 	return dados
 
-dados = lerArquivo('dados1.csv')
+dados = lerArquivo('dadosteste.csv')
 n = int(input('Qual o numero de centroides? '))
 centroides = dados[0:n]
 contador, t, achei = 0, 0, 0
 ultimosCentroides = centroides
 
-while (t < 20 and contador < 5):
+while (t < 20 and contador <2):
 	distancias = [[] for i in range(len(centroides))]
 	newDistancias=[[] for i in range(len(centroides))]
 	cluster1,cluster2,cluster3,fakePoint=[],[],[],[]
@@ -77,31 +68,26 @@ while (t < 20 and contador < 5):
 		for i in range(len(dados)):
 			distancias[j].append(dist_euclidiana(centroides[j],  dados[i]))
 
-	cluster = [[] for i in range(len(dados))]
+	cluster = [[] for i in range(len(centroides))] #inicializando os clusters
+	index=0;
 
 	for i in range(len(dados)):
-		if ((distancias[0][i]<distancias[1][i]) and (distancias[0][i]<distancias[2][i])):
-			cluster[0].append(dados[i])
-		elif ((distancias[1][i]<distancias[0][i]) and (distancias[1][i]<distancias[2][i])):
-			cluster[1].append(dados[i])
-		else:
-			cluster[2].append(dados[i])
+		for j in range(len(centroides)):
+			index = comparaValores(distancias[i], min(distancias[i]))
+			print(index)
+			cluster[index].append(dados[i])
 
-	fakePoint.append(calcularPontoMedio(cluster[0]))
-	fakePoint.append(calcularPontoMedio(cluster[1]))
-	fakePoint.append(calcularPontoMedio(cluster[2]))
-	temp = 0;
+	for i in range(len(dados)):
+		fakePoint.append(calcularPontoMedio(cluster[i]))
 
 	for j in range(len(fakePoint)):
 		for i in range(len(dados)):
-			temp = dist_euclidiana(fakePoint[j], dados[i])
-			newDistancias[j].append(temp)
+			newDistancias[j].append(dist_euclidiana(fakePoint[j], dados[i]))
 	#Achando os novos centroides
 	#achar o menor valor de cada lista
 	#newDistancia=[[dist ao ponto fake (1)],[dist ao ponto fake (2)],[dist ao ponto fake(3)]]
 	for i in range(len(centroides)):
-		index = comparaValores(newDistancias[i], min(newDistancias[i]))
-		centroides[i] = dados[index]
+		centroides[i] = dados[comparaValores(newDistancias[i], min(newDistancias[i]))]
 	#acho o menor valor de cada lista e armazeno em uma lista vai vai conter os 3 menores valores
 	#objetivo: comparar cada valor de menorValor[i] com os valores das 3 listas de newDistancia
 	#para achar os novos valores de centroides:
