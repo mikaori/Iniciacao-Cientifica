@@ -83,8 +83,7 @@ while (t < 20 and contador <2):
 	for j in range(len(fakePoint)):
 		for i in range(len(dados)):
 			newDistancias[j].append(dist_euclidiana(fakePoint[j], dados[i]))
-	#Achando os novos centroides
-	#achar o menor valor de cada lista
+	#Achando os novos centroidesachar o menor valor de cada lista
 	#newDistancia=[[dist ao ponto fake (1)],[dist ao ponto fake (2)],[dist ao ponto fake(3)]]
 	for i in range(len(centroides)):
 		centroides[i] = dados[comparaValores(newDistancias[i], min(newDistancias[i]))]
