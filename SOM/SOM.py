@@ -39,7 +39,6 @@ def comparaValores(lista, valor):
 
 def d_largura(largura_inicial, i, cte_tempo):
 	return largura_inicial * np.exp(-i / cte_tempo)
-<<<<<<< HEAD
 
 def d_taxa_aprendizado(taxa_aprendizado_inicial, i, interacoes):
 	return taxa_aprendizado_inicial * np.exp(-i / interacoes)
@@ -48,11 +47,11 @@ def att_vizinhanca(distancia, largura): #o quanto cada neuronio sofrerá com o r
 	return np.exp(-(distancia**2) / (2* (largura**2)))
 
 def AcharMatch(peso, x): #busca neuronio vencedor
-	distancia = [[] for i in range(len(peso))]
-	tot_sum_dist = []
+	distancia = []
 	for i in range(len(peso)):
 		distancia.append(dist_euclidiana(peso[i],x)) #adiciona a distancia entre cada peso e dado
 	index= comparaValores(distancia, min(distancia)) #O menor valor de totdist será o neuronio vencedor
+	print(peso[index])
 	return peso[index]
 
 def init_largura(pesos): #como achar a largura da grade? li que era o "raio"
@@ -66,42 +65,6 @@ def init_largura(pesos): #como achar a largura da grade? li que era o "raio"
 	largura = (dist_euclidiana(maior_valor,menor_valor))/2
 	return (dist_euclidiana(maior_valor,menor_valor))/2
 
-=======
-
-def d_taxa_aprendizado(taxa_aprendizado_inicial, i, interacoes):
-	return taxa_aprendizado_inicial * np.exp(-i / interacoes)
-
-def att_vizinhanca(distancia, largura):
-	return np.exp(-distancia / (2* (largura**2)))
-
-def AcharMatch(peso, dados): #busca neuronio vencedor
-	distancia = [[] for i in range(len(peso))]
-	tot_sum_dist = []
-
-	for i in range(len(peso)):
-		for j in range(len(dados)):
-			distancia[i].append(dist_euclidiana(peso[i],dados[j])) #adiciona a distancia entre cada peso e dado
-
-	for i in range(len(distancia)):
-		tot_sum_dist.append(sum(distancia[i])) #somamos todos os valores da linha e adicionamos a lista de soma de cada distancia de p ao dado
-
-	#print("total das distancias ", tot_sum_dist)
-	#print("menor valor de totdist ", min(tot_sum_dist))
-	index= comparaValores(tot_sum_dist, min(tot_sum_dist)) #O menor valor de totdist será o neuronio vencedor
-	return peso[index]
-
-def init_largura(pesos): #como achar a largura da grade? li que era o "raio"
-	sum_peso=[]
-	for i in range(len(pesos)):
-		sum_peso.append(sum(pesos[i]))
-	index =comparaValores(sum_peso, max(sum_peso)) #maior ponto mais distante
-	maior_valor= pesos[index]
-	index =comparaValores(sum_peso, min(sum_peso)) #menor ponto mais distante
-	menor_valor= pesos[index]
-	largura = (dist_euclidiana(maior_valor,menor_valor))/2
-	return (dist_euclidiana(maior_valor,menor_valor))/2
-
->>>>>>> 2c2375e281c67688dff03b1a3dc64b40b20b8200
 arquivo = 'dadosteste.csv'
 
 dados = lerArquivo(arquivo)
@@ -113,38 +76,27 @@ taxa_aprendizagem_inicial = 0.1
 largura_inicial = init_largura(pesos)
 
 for i in range(interacoes):
-<<<<<<< HEAD
 
-	x = random.choice(dados)
+	x = r.choice(dados)#É random mesmo??
 
 	#ACHANDO NEURONIO VENCEDOR - aquele que melhor atende ao estimulo da entrada
 	neuronio_vencedor = AcharMatch (pesos,x)
 
-	taxa_aprendizagem = taxa_aprendizado_inicial
+	taxa_aprendizagem = taxa_aprendizagem_inicial
 
 	largura = largura_inicial
-=======
-	#ACHANDO NEURONIO VENCEDOR é mesmo aquele em que a soma é a menor?
-	neuronio_vencedor = AcharMatch (pesos,dados)
-
-	#ATUALIZANDO TAXA DE APRENDIZAGEM
-	taxa_aprendizagem = d_taxa_aprendizado(taxa_aprendizagem_inicial,i,interacoes)
-
-	#ATUALIZANDO LARGURA
-	largura = d_largura(largura_inicial, i, interacoes)
->>>>>>> 2c2375e281c67688dff03b1a3dc64b40b20b8200
 
 	#CALCULANDO DISTANCIA LATERAL - dist do neuronio_vencedor para os outros
-	dist_lateral=[]
-	for i in range(len(pesos)):
-<<<<<<< HEAD
-		valor_distancia = dist_euclidiana(neuronio_vencedor, pesos[i])
+	for valor in range(len(pesos)):
+		valor_distancia = dist_euclidiana(neuronio_vencedor, pesos[valor])
 		if valor_distancia !=0:
 			#ATUALIZANDO A VIZINHANCA
 			if valor_distancia<=largura:
 				influencia = att_vizinhanca(valor_distancia,largura)
 				for i in range(len(pesos)):
-					pesos[i] = pesos[i](taxa_aprendizagem*influencia*(x-pesos[i]))
+					w = pesos[i]
+					for n in range(3):
+						pesos[i] = w[n]*(taxa_aprendizagem*influencia*(x[n]-w[n]))
 
 	#ATUALIZANDO TAXA DE APRENDIZAGEM
 	taxa_aprendizagem = d_taxa_aprendizado(taxa_aprendizagem_inicial,i,interacoes)
@@ -153,13 +105,3 @@ for i in range(interacoes):
 	largura = d_largura(largura_inicial, i, interacoes)
 
 print ("pesos: ", pesos)
-=======
-		valor_distancia = math.pow((dist_euclidiana(neuronio_vencedor, pesos[i])),2)
-		if valor_distancia !=0:
-			valor_distancia=math.sqrt(valor_distancia))
-			#ATUALIZANDO A VIZINHANCA
-			if valor_distancia<=largura:
-				influencia = att_vizinhanca(valor_distancia,largura)
-				 
-print(dist_lateral)
->>>>>>> 2c2375e281c67688dff03b1a3dc64b40b20b8200
