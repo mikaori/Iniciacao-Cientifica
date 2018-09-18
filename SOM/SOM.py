@@ -1,5 +1,4 @@
 import csv
-import numpy as np
 import random as r
 import math
 from matplotlib import pyplot as plt
@@ -25,8 +24,8 @@ def gerar_matriz (linhas, colunas, dados):
 	return (matriz)
 
 def dist_euclidiana (ponto1,ponto2):
-	dim, soma = len(ponto1), 0
-	for i in range(dim):
+	dimensao, soma = len(ponto1), 0
+	for i in range(dimensao):
 		soma += math.pow(ponto1[i] - ponto2[i], 2)
 	return math.sqrt(soma)
 
@@ -38,13 +37,13 @@ def comparaValores(lista, valor):
 	return index
 
 def d_largura(largura_inicial, i, cte_tempo):
-	return largura_inicial * np.exp(-i / cte_tempo)
+	return largura_inicial * math.exp(-i / cte_tempo)
 
 def d_taxa_aprendizado(taxa_aprendizado_inicial, i, interacoes):
-	return taxa_aprendizado_inicial * np.exp(-i / interacoes)
+	return taxa_aprendizado_inicial * math.exp(-i / interacoes)
 
 def att_vizinhanca(distancia, largura): #o quanto cada neuronio sofrerá com o reajuste dos pesos
-	return np.exp(-(distancia**2) / (2* (largura**2)))
+	return math.exp(-(distancia**2) / (2* (largura**2)))
 
 def AcharMatch(peso, x): #busca neuronio vencedor
 	distancia = []
@@ -75,6 +74,7 @@ pesos = gerar_matriz(linha,coluna,dados)
 interacoes = int(input('numero de interacoes = '))
 taxa_aprendizagem_inicial = 0.01
 largura_inicial = init_largura(pesos)
+<<<<<<< HEAD
 taxa_aprendizagem = taxa_aprendizagem_inicial
 largura = largura_inicial
 contador =0
@@ -110,5 +110,37 @@ for j in range(interacoes):
 
 		#ATUALIZANDO LARGURA
 		largura = d_largura(largura_inicial, i, interacoes)
+=======
+
+for i in range(interacoes):
+
+	x = r.choice(dados)#É random mesmo??
+
+	#ACHANDO NEURONIO VENCEDOR - aquele que melhor atende ao estimulo da entrada
+	neuronio_vencedor = AcharMatch (pesos,x)
+
+	taxa_aprendizagem = taxa_aprendizagem_inicial
+
+	largura = largura_inicial
+
+	#CALCULANDO DISTANCIA LATERAL - dist do neuronio_vencedor para os outros
+	for valor in range(len(pesos)):
+		if (pesos[valor]!=0.0):
+			valor_distancia = dist_euclidiana(neuronio_vencedor, pesos[valor])
+			if valor_distancia !=0:
+				#ATUALIZANDO A VIZINHANCA
+				if valor_distancia<=largura:
+					influencia = att_vizinhanca(valor_distancia,largura)
+					for i in range(len(pesos)):
+						w = pesos[i]
+						for n in range(3):
+							pesos[i] = w[n]*(taxa_aprendizagem*influencia*(x[n]-w[n]))
+
+	#ATUALIZANDO TAXA DE APRENDIZAGEM
+	taxa_aprendizagem = d_taxa_aprendizado(taxa_aprendizagem_inicial,i,interacoes)
+
+	#ATUALIZANDO LARGURA
+	largura = d_largura(largura_inicial, i, interacoes)
+>>>>>>> 6d3f957affa2c15fc3ba3407025739968e00a835
 
 print ("pesos: ", pesos)
