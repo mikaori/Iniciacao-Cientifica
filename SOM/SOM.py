@@ -2,6 +2,10 @@ import csv
 import random as r
 import math
 from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import pandas as pd
+import numpy as np
+from pandas.plotting import scatter_matrix
 
 def lerArquivo(arquivo):
 	with open(arquivo, 'r') as arquivo:
@@ -18,9 +22,7 @@ def pontoStringFloat (lista):
 
 def gerar_matriz (linhas, colunas, dados):
 	matriz= [[] for i in range(linhas)]
-	for j in range(linhas):
-		matriz[j]=r.sample(dados,colunas)
-	matriz = list(map(pontoStringFloat,dados))
+	matriz=r.sample(dados,colunas*linhas)
 	return (matriz)
 
 def dist_euclidiana (ponto1,ponto2):
@@ -63,23 +65,30 @@ def init_largura(pesos): #como achar a largura da grade? li que era o "raio"
 	largura = (dist_euclidiana(maior_valor,menor_valor))/2
 	return (dist_euclidiana(maior_valor,menor_valor))/2
 
-arquivo = 'dadosteste.csv'
+def plot3d(dados, pesos):
+	fig = plt.figure()
+	ax = fig.add_subplot(111, projection='3d')
 
-dados = lerArquivo(arquivo)
+	dados = pd.DataFrame(dados, columns=["x","y","z"])
+	pesos = pd.DataFrame(pesos, columns=["x","y","z"])
+	ax.scatter(pesos.x, pesos.y, pesos.z)
+	ax.scatter(dados.x, dados.y, dados.z, c='r', marker='d')
+	plt.show()
+
+dados = lerArquivo('dados1.csv')
 #linha = int(input('Sua matriz será? linha = '))
 linha=3
 #coluna = int(input('coluna = '))
 coluna =3
 pesos = gerar_matriz(linha,coluna,dados)
+#print ("pesos: ", pesos)
 interacoes = int(input('numero de interacoes = '))
 taxa_aprendizagem_inicial = 0.01
 largura_inicial = init_largura(pesos)
-<<<<<<< HEAD
 taxa_aprendizagem = taxa_aprendizagem_inicial
 largura = largura_inicial
 contador =0
 
-#ULTIMO VALOR SEMPRE TA DANDO 0 DE CADA PONTO WHY
 for j in range(interacoes):
 
 	if j==0 or j%len(dados)==1:
@@ -89,11 +98,11 @@ for j in range(interacoes):
 	#inicializando valores iniciais
 	for i in range(len(dados)):
 		neuronio_vencedor = AcharMatch (pesos,dadosSortidos[i%len(dados)])
-		print ("neuronio_vencedor: ",neuronio_vencedor)
+		#print ("neuronio_vencedor: ",neuronio_vencedor)
 
 		#CALCULANDO DISTANCIA LATERAL - dist do neuronio_vencedor para os outros
 		for valor in range(len(pesos)):
-			print("pesos ",pesos[valor],"neuronio_vencedor: ", neuronio_vencedor)
+			#print("pesos ",pesos[valor],"neuronio_vencedor: ", neuronio_vencedor)
 			valor_distancia = dist_euclidiana(neuronio_vencedor, pesos[valor])
 			if valor_distancia >=0.00001:
 				#ATUALIZANDO A VIZINHANCA
@@ -101,46 +110,18 @@ for j in range(interacoes):
 					influencia = att_vizinhanca(valor_distancia,largura)
 					for n in range(3): #quero o numero de colunas de um ponto
 						w = pesos[valor]
-						print("w = ", w)
+						#print("w = ", w)
 						pesos[valor][n] = w[n]+(taxa_aprendizagem*influencia*(dadosSortidos[i%len(dados)][n]-w[n]))
-						print("novos pesos: ", pesos[i])
+						#print("novos pesos: ", pesos[i])
 
 		#ATUALIZANDO TAXA DE APRENDIZAGEM
 		taxa_aprendizagem = d_taxa_aprendizado(taxa_aprendizagem_inicial,i,interacoes)
+		#print("taxa aprendizagem: ",taxa_aprendizagem)
 
 		#ATUALIZANDO LARGURA
 		largura = d_largura(largura_inicial, i, interacoes)
-=======
-
-for i in range(interacoes):
-
-	x = r.choice(dados)#É random mesmo??
-
-	#ACHANDO NEURONIO VENCEDOR - aquele que melhor atende ao estimulo da entrada
-	neuronio_vencedor = AcharMatch (pesos,x)
-
-	taxa_aprendizagem = taxa_aprendizagem_inicial
-
-	largura = largura_inicial
-
-	#CALCULANDO DISTANCIA LATERAL - dist do neuronio_vencedor para os outros
-	for valor in range(len(pesos)):
-		if (pesos[valor]!=0.0):
-			valor_distancia = dist_euclidiana(neuronio_vencedor, pesos[valor])
-			if valor_distancia !=0:
-				#ATUALIZANDO A VIZINHANCA
-				if valor_distancia<=largura:
-					influencia = att_vizinhanca(valor_distancia,largura)
-					for i in range(len(pesos)):
-						w = pesos[i]
-						for n in range(3):
-							pesos[i] = w[n]*(taxa_aprendizagem*influencia*(x[n]-w[n]))
-
-	#ATUALIZANDO TAXA DE APRENDIZAGEM
-	taxa_aprendizagem = d_taxa_aprendizado(taxa_aprendizagem_inicial,i,interacoes)
-
-	#ATUALIZANDO LARGURA
-	largura = d_largura(largura_inicial, i, interacoes)
->>>>>>> 6d3f957affa2c15fc3ba3407025739968e00a835
+		#print("largura: ", largura)
 
 print ("pesos: ", pesos)
+
+plot3d(dados, pesos)
