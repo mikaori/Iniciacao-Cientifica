@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import csv
 import random as r
 import math
@@ -75,7 +76,20 @@ def plot3d(dados, pesos):
 	ax.scatter(dados.x, dados.y, dados.z, c='r', marker='d')
 	plt.show()
 
-dados = lerArquivo('dados1.csv')
+def calcularDistanciaGrade(pesos):
+	dist_grade_neuronios=[]
+	#calcula distancia entre vizinhos
+	for i in range(len(pesos)):
+		if i%coluna!=0 and i+1<linha*coluna: #distancia para o ponto do lado
+			print(' pesos[i]', pesos[i],' pesos[i+1]) ', pesos[i+1])
+			dist_grade_neuronios.append(dist_euclidiana(pesos[i],pesos[i+1]))
+		if i+coluna<linha*coluna: #distancia para o ponto abaixo
+			print(' pesos[i]', pesos[i],' pesos[i+coluna]) ', pesos[i+coluna])
+			dist_grade_neuronios.append(dist_euclidiana(pesos[i], pesos[i+coluna]))
+	print ('distancia de casa ponto para os vizinhos: ', dist_grade_neuronios)
+
+
+dados = lerArquivo('dadosteste.csv')
 #linha = int(input('Sua matriz será? linha = '))
 linha=3
 #coluna = int(input('coluna = '))
@@ -88,6 +102,7 @@ largura_inicial = init_largura(pesos)
 taxa_aprendizagem = taxa_aprendizagem_inicial
 largura = largura_inicial
 contador =0
+n_colunas=len(dados[0])
 
 for j in range(interacoes):
 
@@ -108,7 +123,7 @@ for j in range(interacoes):
 				#ATUALIZANDO A VIZINHANCA
 				if valor_distancia<=largura:
 					influencia = att_vizinhanca(valor_distancia,largura)
-					for n in range(3): #quero o numero de colunas de um ponto
+					for n in range(): #quero o numero de colunas de um ponto
 						w = pesos[valor]
 						#print("w = ", w)
 						pesos[valor][n] = w[n]+(taxa_aprendizagem*influencia*(dadosSortidos[i%len(dados)][n]-w[n]))
@@ -122,6 +137,8 @@ for j in range(interacoes):
 		largura = d_largura(largura_inicial, i, interacoes)
 		#print("largura: ", largura)
 
-print ("pesos: ", pesos)
+print ('pesos: ', pesos)
+
+calcularDistanciaGrade(pesos)
 
 plot3d(dados, pesos)
