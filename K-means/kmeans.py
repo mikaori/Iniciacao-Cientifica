@@ -58,27 +58,25 @@ dados = lerArquivo('dados1.csv')
 n = int(input('Qual o numero de centroides? '))
 centroides = dados[0:n]
 contador, t, achei = 0, 0, 0
-ultimosCentroides = centroides
+ultimosCentroides = centroides.copy()
 
-while (t < 20 and contador < 5):
+while (t < 20 and achei!=len(centroides)):
 	distancias = [[] for i in range(len(centroides))]
 	newDistancias=[[] for i in range(len(centroides))]
 	cluster1,cluster2,cluster3,fakePoint=[],[],[],[]
 
 	for j in range (len(centroides)):
 		if (centroides[j] == ultimosCentroides[j]):
-			achei = 1;
-
-	if achei!=0:
-		contador = contador+1
+			achei=achei+1;
 
 	ultimosCentroides=centroides #armazena o valoe do ultimo centroide
+
 	for j in range (len(centroides)):
 		for i in range(len(dados)):
 			distancias[j].append(dist_euclidiana(centroides[j],  dados[i]))
 
 	cluster = [[] for i in range(len(dados))]
-	print ('aqui',len(dados[0]))
+
 	for i in range(len(dados)):
 		if ((distancias[0][i]<distancias[1][i]) and (distancias[0][i]<distancias[2][i])):
 			cluster[0].append(dados[i])
@@ -106,4 +104,6 @@ while (t < 20 and contador < 5):
 	#para cada i faco ele receber o valor do dado no indice encontrado pela funcao comparaValores envio para a funcao comparaValores
 	#a lista com as novas distancias e o menor valor que encontrei dessa lista para poder entao achar o indice desse menor valor.
 	t=t+1
+
+plot3d(dados, centroides)
 print ("centroides finais: ", centroides, "quantas vezes rodei por aqui: ", contador)
