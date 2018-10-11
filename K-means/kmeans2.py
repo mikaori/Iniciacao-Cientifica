@@ -60,17 +60,16 @@ def main():
 	n = int(input('Qual o numero de centroides? '))
 	global centroides
 	centroides = dados[0:n]
-	t, achei = 0, 0
+	t, match = 0, 0
 	global ultimosCentroides
 	ultimosCentroides = centroides
 	n_colunas=len(dados[0])
-	print( range (len(centroides)))
 
-	while (t < 20):
+	while (t < 100 and match!=1):
 		distancias = [[] for i in range(len(centroides))]
 		newDistancias=[[] for i in range(len(centroides))]
 		cluster1,cluster2,cluster3,fakePoint=[],[],[],[]
-		contador=0
+		contador = 0
 
 		#print('centroides: ', centroides)
 		#print('ultimosCentroides', ultimosCentroides)
@@ -80,7 +79,8 @@ def main():
 				print('centroides[j]', centroides[j],'ultimosCentroides', ultimosCentroides[j],'contador', contador)
 
 		if contador==len(centroides):
-			achei=1
+			match=1
+			print(match)
 
 		ultimosCentroides=centroides #armazena o valor do ultimo centroide
 		print('ultimosCentroides: ',ultimosCentroides)
@@ -123,5 +123,7 @@ def main():
 		t=t+1
 
 	print ("\ncentroides finais: ", centroides, "quantas vezes rodei por aqui: ", t)
+
+	plot3d(centroides, dados)
 
 main()
