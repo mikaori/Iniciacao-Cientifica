@@ -58,10 +58,8 @@ def plot3d(dados, pesos):
 def main():
 	dados = lerArquivo('n_dimensional.csv')
 	n = int(input('Qual o numero de centroides? '))
-	global centroides
 	centroides = dados[0:n]
 	t, match = 0, 0
-	global ultimosCentroides
 	ultimosCentroides = centroides
 	n_colunas=len(dados[0])
 
