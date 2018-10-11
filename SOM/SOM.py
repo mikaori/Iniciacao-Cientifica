@@ -21,7 +21,7 @@ def lerArquivo(arquivo):
 def pontoStringFloat (lista):
 	return list(map(float, lista))
 
-def gerar_grade (linhas, colunas, dados):
+def gerar_grade (linhas, colunas):
 	#gero uma matriz (lista de listas)
 	matriz = []
 
@@ -31,23 +31,38 @@ def gerar_grade (linhas, colunas, dados):
 			matriz.append(neuronio)
 	print(matriz)
 
-	#matriz=r.sample(dados, colunas*linhas)
+def init_pesos(linhas, colunas, dados, pesos):
+	pesos=r.sample(dados,colunas*linhas)
+	printf(pesos)
+ 	return (matriz)
 
-	#determinando as distâncias iniciais
-	#for i in range(linhas):
-	#	for j in range(colunas):
-			#matriz[i][j].append(dist)
+def init_grade(linhas, colunas, matriz):
+	dist_vizinho = 1
 
-	tam = linhas*colunas
-	dist = 1
-	for i in range (tam):
-		print(i)
-		if i==0 or i%coluna!=0 and i+1<tam: #distancia para o ponto do lado
-			matriz[].append(dist)#NAO É APPEND TEM QUE USAR = MESMO PQ VAI SUBSTITUIR VALOR E NAO ADD
-			print(matriz)
-		if i+coluna<tam: #distancia para o ponto abaixo
-			matriz.append(dist)
-			print(matriz)
+	#ordem vizinho a direita e segue sentido horario
+	for i in range(linhas):
+		for k in range(colunas):
+			#vizinhos a direita
+			if k < (colunas-1):
+				matriz[i][k].append(dist_vizinho)
+			if k == colunas:
+				matriz[i][k].append(0)
+			#vizinhos abaixo
+			if i == linha:
+				matriz[i][k].append(0)
+			else:
+				matriz[i][k].append(dist_vizinho)
+			#vizinhos a esquerda
+			if k == 1:
+				matriz[i][k].append(0)
+			else:
+				matriz[i][k].append(dist_vizinho)
+			#vizinhos acima
+			if i == 1:
+				matriz[i][k].append(0)
+			else:
+				matriz[i][k].append(dist_vizinho)
+
 	return (matriz)
 
 def dist_euclidiana (ponto1, ponto2):
@@ -113,13 +128,21 @@ def calcularDistanciaGrade(pesos):
 	print ('distancia de casa ponto para os vizinhos: ', dist_grade_neuronios)
 
 dados = lerArquivo('dadosteste.csv')
+
 #linha = int(input('Sua matriz será? linha = '))
 linha = 3
 #coluna = int(input('coluna = '))
 coluna = 3
-pesos = gerar_grade(linha, coluna, dados)
+
+grade = gerar_grade(linha, coluna)
+init_grade(linha, coluna, grade)
+
+pesos = gerar_grade(linha, coluna)
+init_pesos(linha, coluna, dados, pesos)
+
 #print ("pesos: ", pesos)
 interacoes = int(input('numero de interacoes = '))
+
 taxa_aprendizagem_inicial = 0.01
 largura_inicial = init_largura(pesos)
 taxa_aprendizagem = taxa_aprendizagem_inicial
