@@ -13,37 +13,32 @@ def gerar_grade (linhas, colunas):
 	matriz = []
 
 	for i in range (linhas):
-		matriz.append([] for j in range(colunas))
-
-	print(matriz)
+		for j in range (colunas):
+			neuronio = []
+			matriz.append(neuronio)
 	return matriz
 
 def init_grade(linhas, colunas, matriz):
-	dist_vizinho = 1
+	#percorrendo a matriz
+	for i in range (linhas*colunas):
+		#pegando um ponto da matriz
+		for j in range (linhas):
+			for k in range (colunas):
+				px=j
+				py=k
 
-	#ordem vizinho a direita e segue sentido horario
-	for i in range(linhas):
-		for k in range(colunas):
-			#vizinhos a direita
-			if k < (colunas-1):
-				matriz[i][k].append(dist_vizinho)
-			if k == colunas:
-				matriz[i][k].append(0)
-			#vizinhos abaixo
-			if i == linha:
-				matriz[i][k].append(0)
-			else:
-				matriz[i][k].append(dist_vizinho)
-			#vizinhos a esquerda
-			if k == 1:
-				matriz[i][k].append(0)
-			else:
-				matriz[i][k].append(dist_vizinho)
-			#vizinhos acima
-			if i == 1:
-				matriz[i][k].append(0)
-			else:
-				matriz[i][k].append(dist_vizinho)
+				if j==1 and k==1:
+					px=1
+					py=1
+
+				#calculando a distancia do ponto da matriz para o restante
+				for j in range (linhas):
+					for k in range (colunas):
+						distManhattan=abs(px-j)+abs(py-k)
+						matriz[i].append(distManhattan)
+				print(matriz)
+				print('FINALIZEI DISTANCIA MANHATTAN')
+	print(matriz)
 
 	return (matriz)
 
