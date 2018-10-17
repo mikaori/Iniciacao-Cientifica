@@ -29,7 +29,7 @@ def gerar_grade (linhas, colunas):
 		for j in range (colunas):
 			neuronio = []
 			matriz.append(neuronio)
-	print(matriz)
+	return matriz
 
 def init_pesos(linhas, colunas, dados, pesos):
 	pesos=r.sample(dados,colunas*linhas)
@@ -37,31 +37,21 @@ def init_pesos(linhas, colunas, dados, pesos):
  	return (matriz)
 
 def init_grade(linhas, colunas, matriz):
-	dist_vizinho = 1
+	contador = 0
+	#ponto em que a distancia será calculada para o restante dos outros pontos
+	for j in range (linhas):
+		for k in range (colunas):
+			px=j
+			py=k
 
-	#ordem vizinho a direita e segue sentido horario
-	for i in range(linhas):
-		for k in range(colunas):
-			#vizinhos a direita
-			if k < (colunas-1):
-				matriz[i][k].append(dist_vizinho)
-			if k == colunas:
-				matriz[i][k].append(0)
-			#vizinhos abaixo
-			if i == linha:
-				matriz[i][k].append(0)
-			else:
-				matriz[i][k].append(dist_vizinho)
-			#vizinhos a esquerda
-			if k == 1:
-				matriz[i][k].append(0)
-			else:
-				matriz[i][k].append(dist_vizinho)
-			#vizinhos acima
-			if i == 1:
-				matriz[i][k].append(0)
-			else:
-				matriz[i][k].append(dist_vizinho)
+			#print('px',j,'py',k)
+			#calculando a distancia do ponto da matriz para o restante
+			for x in range (linhas):
+				for y in range (colunas):
+					distManhattan=abs(px-x)+abs(py-y)
+					matriz[contador].append(distManhattan)
+			contador=contador+1
+			print(matriz)
 
 	return (matriz)
 
@@ -145,7 +135,7 @@ def main():
 	interacoes = int(input('numero de interacoes = '))
 
 	taxa_aprendizagem_inicial = 0.01
-	largura_inicial = init_largura(pesos)
+	largura_inicial = init_largura(pesos) #A LARGURA AINDA É CONFORME OS VALORES DOS PESOS?
 	taxa_aprendizagem = taxa_aprendizagem_inicial
 	largura = largura_inicial
 	contador = 0
