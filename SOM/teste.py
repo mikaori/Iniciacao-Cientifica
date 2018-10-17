@@ -19,26 +19,20 @@ def gerar_grade (linhas, colunas):
 	return matriz
 
 def init_grade(linhas, colunas, matriz):
-	#percorrendo a matriz
-	for i in range (linhas*colunas):
-		#pegando um ponto da matriz
-		for j in range (linhas):
-			for k in range (colunas):
-				px=j
-				py=k
+	contador = 0
+	for j in range (linhas):
+		for k in range (colunas):
+			px=j
+			py=k
 
-				if j==1 and k==1:
-					px=1
-					py=1
-
-				#calculando a distancia do ponto da matriz para o restante
-				for j in range (linhas):
-					for k in range (colunas):
-						distManhattan=abs(px-j)+abs(py-k)
-						matriz[i].append(distManhattan)
-				print(matriz)
-				print('FINALIZEI DISTANCIA MANHATTAN')
-	print(matriz)
+			print('px',j,'py',k)
+			#calculando a distancia do ponto da matriz para o restante
+			for x in range (linhas):
+				for y in range (colunas):
+					distManhattan=abs(px-x)+abs(py-y)
+					matriz[contador].append(distManhattan)
+			contador=contador+1
+			print(matriz)
 
 	return (matriz)
 
