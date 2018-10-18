@@ -31,20 +31,19 @@ def gerar_grade (linhas, colunas):
 			matriz.append(neuronio)
 	return matriz
 
-def init_pesos(linhas, colunas, dados, pesos):
-	pesos=r.sample(dados,colunas*linhas)
-	printf(pesos)
- 	return (matriz)
+def init_pesos(linhas, colunas, dados):
+	matriz= [[] for i in range(linhas)]
+	for j in range(linhas):
+		matriz[j]=r.sample(dados,colunas*linhas)
 
 def init_grade(linhas, colunas, matriz):
 	contador = 0
-	#ponto em que a distancia será calculada para o restante dos outros pontos
 	for j in range (linhas):
 		for k in range (colunas):
 			px=j
 			py=k
 
-			#print('px',j,'py',k)
+			print('px',j,'py',k)
 			#calculando a distancia do ponto da matriz para o restante
 			for x in range (linhas):
 				for y in range (colunas):
@@ -105,18 +104,6 @@ def plot3d(dados, pesos):
 	ax.scatter(dados.x, dados.y, dados.z, c='r', marker='d')
 	plt.show()
 
-def calcularDistanciaGrade(pesos):
-	dist_grade_neuronios = []
-	#calcula distancia entre vizinhos
-	for i in range(len(pesos)):
-		if i%coluna!=0 and i+1<linha*coluna: #distancia para o ponto do lado
-			print(' pesos[i]', pesos[i],' pesos[i+1]) ', pesos[i+1])
-			dist_grade_neuronios.append(dist_euclidiana(pesos[i], pesos[i+1]))
-		if i+coluna<linha*coluna: #distancia para o ponto abaixo
-			print(' pesos[i]', pesos[i],' pesos[i+coluna]) ', pesos[i+coluna])
-			dist_grade_neuronios.append(dist_euclidiana(pesos[i], pesos[i+coluna]))
-	print ('distancia de casa ponto para os vizinhos: ', dist_grade_neuronios)
-
 def main():
 	dados = lerArquivo('dadosteste.csv')
 
@@ -128,12 +115,11 @@ def main():
 	grade = gerar_grade(linha, coluna)
 	init_grade(linha, coluna, grade)
 
-	pesos = gerar_grade(linha, coluna)
-	init_pesos(linha, coluna, dados, pesos)
+	pesos = init_pesos(linha, coluna, dados)
 
-	#print ("pesos: ", pesos)
+	print ("pesos: ", pesos)
 	interacoes = int(input('numero de interacoes = '))
-
+	print ("dados: ", dados)
 	taxa_aprendizagem_inicial = 0.01
 	largura_inicial = init_largura(pesos) #A LARGURA AINDA É CONFORME OS VALORES DOS PESOS?
 	taxa_aprendizagem = taxa_aprendizagem_inicial
