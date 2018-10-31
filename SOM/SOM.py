@@ -160,7 +160,8 @@ def main():
 				if valor_distancia >= 0.00001:
 					#ATUALIZANDO sA VIZINHANCA
 					if valor_distancia <= largura:
-						influencia = att_vizinhanca(d_quadrado, largura)//achar o index na lista d_quadrado q representa o ponto na list 
+						influencia = att_vizinhanca(d_quadrado[pesos], largura)
+						#achar o index na lista d_quadrado q representa o ponto na list
 						for n in range(n_colunas): #quero o numero de colunas de um ponto
 							w = pesos[valor]
 							#print("w = ", w)
