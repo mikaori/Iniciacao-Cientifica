@@ -151,6 +151,7 @@ def main():
 			neuronio_vencedor = AcharMatch (pesos, dadosSortidos[i%len(dados)])
 			print ("neuronio_vencedor: ", neuronio_vencedor)
 			index = comparaValores(pesos, neuronio_vencedor)
+			
 			d_quadrado=valorQuadrado(grade, index)
 
 			#CALCULANDO DISTANCIA LATERAL - dist do neuronio_vencedor para os outros
@@ -160,7 +161,7 @@ def main():
 				if valor_distancia >= 0.00001:
 					#ATUALIZANDO sA VIZINHANCA
 					if valor_distancia <= largura:
-						influencia = att_vizinhanca(d_quadrado[pesos], largura)
+						influencia = att_vizinhanca(d_quadrado[valor], largura)
 						#achar o index na lista d_quadrado q representa o ponto na list
 						for n in range(n_colunas): #quero o numero de colunas de um ponto
 							w = pesos[valor]
