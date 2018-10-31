@@ -97,7 +97,7 @@ def main():
 					n_centroide=j #pega em qual centroide está
 			cluster[n_centroide].append(dados[i])
 
-		#print('\ncluster: ', cluster)
+		print('\ncluster: ', cluster)
 
 		for i in range(len(centroides)):
 			fakePoint.append(calcularPontoMedio(cluster[i], n_colunas))
