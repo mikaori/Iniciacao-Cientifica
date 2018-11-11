@@ -5,6 +5,7 @@ import random as r
 import math
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import pandas as pd
 
 def dist_euclidiana (ponto1,ponto2):
 	dim, soma = len(ponto1), 0 #len retorna o número de caracteres de uma string

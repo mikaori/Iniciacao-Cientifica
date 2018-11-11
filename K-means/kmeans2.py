@@ -2,6 +2,8 @@
 import csv
 import numpy as np
 import math
+import pandas as pd
+from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
 
 def dist_euclidiana (ponto1,ponto2):
@@ -56,11 +58,11 @@ def plot3d(dados, pesos):
 	plt.show()
 
 def main():
-	dados = lerArquivo('n_dimensional.csv')
+	dados = lerArquivo('dadosteste.csv')
 	n = int(input('Qual o numero de centroides? '))
 	centroides = dados[0:n]
 	t, match = 0, 0
-	ultimosCentroides = centroides
+	ultimosCentroides = centroides.copy()
 	n_colunas=len(dados[0])
 
 	while (t < 100 and match!=1):
@@ -80,7 +82,7 @@ def main():
 			match=1
 			print(match)
 
-		ultimosCentroides=centroides #armazena o valor do ultimo centroide
+		ultimosCentroides=centroides.copy() #armazena o valor do ultimo centroide
 		print('ultimosCentroides: ',ultimosCentroides)
 		for j in range (len(centroides)):
 			for i in range(len(dados)):

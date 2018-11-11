@@ -33,8 +33,8 @@ def gerar_grade (linhas, colunas):
 
 def init_pesos(linhas, colunas, dados):
 	matriz= [[] for i in range(linhas)]
-	matriz=r.sample(dados,colunas*linhas)
-	matriz = list(map(pontoStringFloat, dados))
+	aux = dados.copy()
+	matriz=r.sample(aux, linhas*colunas)
 	return matriz
 
 def init_grade(linhas, colunas, matriz):
@@ -44,14 +44,14 @@ def init_grade(linhas, colunas, matriz):
 			px=j
 			py=k
 
-			print('px',j,'py',k)
+			#print('px',j,'py',k)
 			#calculando a distancia do ponto da matriz para o restante
 			for x in range (linhas):
 				for y in range (colunas):
 					distManhattan=abs(px-x)+abs(py-y)
 					matriz[contador].append(distManhattan)
 			contador=contador+1
-			print(matriz)
+			#print(matriz)
 
 	return (matriz)
 
@@ -83,16 +83,6 @@ def AcharMatch(peso, x): #busca neuronio vencedor
 		distancia.append(dist_euclidiana(peso[i], x)) #adiciona a distancia entre cada peso e dado
 	index= comparaValores(distancia, min(distancia)) #O menor valor de totdist será o neuronio vencedor
 	return peso[index]
-
-def valorQuadrado(grade, index):
-	dist_vizinhos = []
-	dist_vizinhos = grade [index]
-	print("dist_vizinhos: ", dist_vizinhos, " grade: ", grade)
-	for distancia in (range(len(dist_vizinhos))):
-		dist_vizinhos[distancia]=dist_vizinhos[distancia]*dist_vizinhos[distancia];
-		print(" valor: ", dist_vizinhos[distancia])
-	print("dist_vizinhos ao quadrado: ", dist_vizinhos)
-	return dist_vizinhos
 
 def init_largura(pesos): #como achar a largura da grade? li que era o "raio"
 	sum_peso = []
@@ -127,10 +117,11 @@ def main():
 	init_grade(linha, coluna, grade)
 
 	pesos = init_pesos(linha, coluna, dados)
-
 	print ("pesos: ", pesos)
+
 	interacoes = int(input('numero de interacoes = '))
 	print ("dados: ", dados)
+
 	taxa_aprendizagem_inicial = 0.01
 	largura_inicial = init_largura(pesos) #A LARGURA AINDA É CONFORME OS VALORES DOS PESOS?
 	taxa_aprendizagem = taxa_aprendizagem_inicial
@@ -138,33 +129,33 @@ def main():
 	contador = 0
 	n_colunas = len(dados[0])
 	index=0
-	d_quadrado=[]
 
 	for j in range(interacoes):
 
 		if j==0 or j%len(dados)==1:
-			dadosSortidos = dados
+			dadosSortidos = dados.copy()
 			r.shuffle(dadosSortidos)
 
 		#inicializando valores iniciais
 		for i in range(len(dados)):
 			neuronio_vencedor = AcharMatch (pesos, dadosSortidos[i%len(dados)])
-			print ("neuronio_vencedor: ", neuronio_vencedor)
+			#print ("neuronio_vencedor: ", neuronio_vencedor)
 			index = comparaValores(pesos, neuronio_vencedor)
-			
-			d_quadrado=valorQuadrado(grade, index)
+			#print ("index: ",index)
 
 			#CALCULANDO DISTANCIA LATERAL - dist do neuronio_vencedor para os outros
 			for valor in range(len(pesos)):
-				#print("pesos ", pesos[valor], "neuronio_vencedor: ", neuronio_vencedor)
+				print("pesos ", pesos[valor], "neuronio_vencedor: ", neuronio_vencedor)
 				valor_distancia = dist_euclidiana(neuronio_vencedor, pesos[valor])
 				if valor_distancia >= 0.00001:
 					#ATUALIZANDO sA VIZINHANCA
 					if valor_distancia <= largura:
-						influencia = att_vizinhanca(d_quadrado[valor], largura)
+						#print("d_quadrado[valor] = ")
+						dist_grade_neuronio = grade[valor].copy()
+						influencia = att_vizinhanca(dist_grade_neuronio[valor], largura)
 						#achar o index na lista d_quadrado q representa o ponto na list
 						for n in range(n_colunas): #quero o numero de colunas de um ponto
-							w = pesos[valor]
+							w = pesos[valor].copy()
 							#print("w = ", w)
 							pesos[valor][n] = w[n]+(taxa_aprendizagem*influencia*(dadosSortidos[i%len(dados)][n]-w[n]))
 							#print("novos pesos: ", pesos[i])
@@ -176,8 +167,8 @@ def main():
 			#ATUALIZANDO LARGURA
 			largura = d_largura(largura_inicial, i, interacoes)
 			#print("largura: ", largura)
-
-	print ('pesos: ', pesos)
+			print(dados)
+	#print ('pesos: ', pesos)
 
 	plot3d(dados, pesos)
 
