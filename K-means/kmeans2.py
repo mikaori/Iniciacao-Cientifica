@@ -60,30 +60,31 @@ def plot3d(dados, pesos):
 def main():
 	dados = lerArquivo('dadosteste.csv')
 	n = int(input('Qual o numero de centroides? '))
-	centroides = dados[0:n]
+	centroides = dados[0:n].copy()
 	t, match = 0, 0
 	ultimosCentroides = centroides.copy()
 	n_colunas=len(dados[0])
 
-	while (t < 100 and match!=1):
+	while (t < 100 and match!=2):
 		distancias = [[] for i in range(len(centroides))]
 		newDistancias=[[] for i in range(len(centroides))]
 		cluster1,cluster2,cluster3,fakePoint=[],[],[],[]
 		contador = 0
 
-		#print('centroides: ', centroides)
+		print('centroides: ', centroides)
 		#print('ultimosCentroides', ultimosCentroides)
 		for j in range (len(centroides)):
 			if (centroides[j] == ultimosCentroides[j]):
 				contador=contador+1
-				print('centroides[j]', centroides[j],'ultimosCentroides', ultimosCentroides[j],'contador', contador)
+				print('centroides[j]', centroides[j],'ultimosCentroides', ultimosCentroides[j],'contador ', contador,'j ', j)
 
 		if contador==len(centroides):
-			match=1
+			match=match+1
 			print(match)
 
-		ultimosCentroides=centroides.copy() #armazena o valor do ultimo centroide
+		ultimosCentroides = centroides.copy() #armazena o valor do ultimo centroide
 		print('ultimosCentroides: ',ultimosCentroides)
+
 		for j in range (len(centroides)):
 			for i in range(len(dados)):
 				distancias[j].append(dist_euclidiana(centroides[j],  dados[i]))
@@ -115,7 +116,7 @@ def main():
 
 		#para achar os novos valores de centroides:
 		for i in range(len(centroides)):
-			centroides[i] = dados[comparaValores(newDistancias[i], min(newDistancias[i]))]
+			centroides[i] = dados[comparaValores(newDistancias[i], min(newDistancias[i]))].copy()
 			print(centroides[i])
 		#para cada i faco ele receber o valor do dado no indice encontrado pela funcao comparaValores envio para a funcao comparaValores
 		#a lista com as novas distancias e o menor valor que encontrei dessa lista para poder entao achar o indice desse menor valor.
