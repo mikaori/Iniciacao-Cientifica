@@ -140,13 +140,12 @@ def main():
 		for i in range(len(dados)):
 			neuronio_vencedor = AcharMatch (pesos, dadosSortidos[i%len(dados)])
 			#print ("neuronio_vencedor: ", neuronio_vencedor)
-			index = comparaValores(pesos, neuronio_vencedor)
 			#print ("index: ",index)
-
 			#CALCULANDO DISTANCIA LATERAL - dist do neuronio_vencedor para os outros
 			for valor in range(len(pesos)):
-				print("pesos ", pesos[valor], "neuronio_vencedor: ", neuronio_vencedor)
+				#print("pesos ", pesos[valor], "neuronio_vencedor: ", neuronio_vencedor)
 				valor_distancia = dist_euclidiana(neuronio_vencedor, pesos[valor])
+				print("\n 2 dados: ", dados, " pesos: ", pesos)
 				if valor_distancia >= 0.00001:
 					#ATUALIZANDO sA VIZINHANCA
 					if valor_distancia <= largura:
@@ -155,11 +154,12 @@ def main():
 						influencia = att_vizinhanca(dist_grade_neuronio[valor], largura)
 						#achar o index na lista d_quadrado q representa o ponto na list
 						for n in range(n_colunas): #quero o numero de colunas de um ponto
-							w = pesos[valor].copy()
+							w = pesos[valor]
 							#print("w = ", w)
 							pesos[valor][n] = w[n]+(taxa_aprendizagem*influencia*(dadosSortidos[i%len(dados)][n]-w[n]))
 							#print("novos pesos: ", pesos[i])
 
+				print("\n 3 dados: ", dados, " pesos: ", pesos)
 			#ATUALIZANDO TAXA DE APRENDIZAGEM
 			taxa_aprendizagem = d_taxa_aprendizado(taxa_aprendizagem_inicial, i, interacoes)
 			#print("taxa aprendizagem: ",taxa_aprendizagem)
@@ -167,9 +167,10 @@ def main():
 			#ATUALIZANDO LARGURA
 			largura = d_largura(largura_inicial, i, interacoes)
 			#print("largura: ", largura)
-			print(dados)
+			#print(dados)
+
 	#print ('pesos: ', pesos)
 
-	plot3d(dados, pesos)
+	plot3d(pesos, dados)
 
 main()
