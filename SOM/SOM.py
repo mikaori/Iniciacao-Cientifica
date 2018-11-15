@@ -33,7 +33,7 @@ def gerar_grade (linhas, colunas):
 
 def init_pesos(linhas, colunas, dados):
 	matriz= [[] for i in range(linhas)]
-	aux = dados.copy()
+	aux = copy.deepcopy(dados)
 	matriz=r.sample(aux, linhas*colunas)
 	return matriz
 
@@ -133,7 +133,7 @@ def main():
 	for j in range(interacoes):
 
 		if j==0 or j%len(dados)==1:
-			dadosSortidos = dados.copy()
+			dadosSortidos = copy.deepcopy(dados)
 			r.shuffle(dadosSortidos)
 
 		#inicializando valores iniciais
@@ -150,7 +150,7 @@ def main():
 					#ATUALIZANDO sA VIZINHANCA
 					if valor_distancia <= largura:
 						#print("d_quadrado[valor] = ")
-						dist_grade_neuronio = grade[valor].copy()
+						dist_grade_neuronio = copy.deepcopy(grade[valor])
 						influencia = att_vizinhanca(dist_grade_neuronio[valor], largura)
 						#achar o index na lista d_quadrado q representa o ponto na list
 						for n in range(n_colunas): #quero o numero de colunas de um ponto
