@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 from pandas.plotting import scatter_matrix
 import copy
-
+import seaborn as sns
 
 def lerArquivo(arquivo):
 	with open(arquivo, 'r') as arquivo:
@@ -63,6 +63,32 @@ def dist_euclidiana (ponto1, ponto2):
 		soma += math.pow(ponto1[i] - ponto2[i], 2)
 	return math.sqrt(soma)
 
+def calcularDistanciaGrade(pesos, linha, coluna, distancias, neuronio_x, neuronio_y):
+	#calcula distancia entre vizinhos na seguinte sequencia: para o lado, para baixo
+
+	for i in range(len(pesos)):
+		print(pesos[i])
+
+	for i in range(len(pesos)):
+		if i%coluna==0: #se o elemento é ele mesmo
+			distancias.append(0)
+			neuronio_x.append(i)
+			neuronio_y.append(i)
+
+		if ((i+1)%coluna)!=0 and i+1<linha*coluna: #distancia para o ponto do lado - se o proximo nao for na linha de baixo ou se é menor que o total de neuronios
+			#print(' pesos[i]', pesos[i],' pesos[i+1]) ', pesos[i+1])
+			distancias.append(dist_euclidiana(pesos[i], pesos[i+1]))
+			neuronio_x.append(i)
+			neuronio_y.append(i+1)
+		if i+coluna<linha*coluna: #distancia para o ponto abaixo - só nao fará se o ponto estiver na ultima linha
+			distancias.append(dist_euclidiana(pesos[i], pesos[i+coluna]))
+			neuronio_x.append(i)
+			neuronio_y.append(i+coluna)
+	#print ('distancia de casa ponto para os vizinhos: ', distancias)
+	#print ('neuronio_x ', neuronio_x, 'neuronio_y ', neuronio_y)
+
+	return distancias, neuronio_x, neuronio_y
+
 def comparaValores(lista, valor):
 	index = 0;
 	for i in range(len(lista)):
@@ -107,65 +133,45 @@ def plot3d(dados, pesos):
 	ax.scatter(dados.x, dados.y, dados.z, c='r', marker='d')
 	plt.show()
 
-def plotMatrizU(pesos, n_colunas):
-	dist_matriz=[]
-	neuronio=[]
-	neuronio_comp=[]
+def plotMatrizU(pesos, coluna, linha):
+	distancias=[]
+	neuronio_x=[]
+	neuronio_y=[]
 
+	distancias, neuronio_x, neuronio_y = calcularDistanciaGrade(pesos, coluna, linha, distancias, neuronio_x, neuronio_y)
 
-	dist_matriz.append(dist_euclidiana(pesos[0], pesos[0]))
-	neuronio.append(0)
-	neuronio_comp.append(0)
-	dist_matriz.append(dist_euclidiana(pesos[0], pesos[1]))
-	neuronio.append(0)
-	neuronio_comp.append(1)
-	dist_matriz.append(dist_euclidiana(pesos[1], pesos[2]))
-	neuronio.append(1)
-	neuronio_comp.append(2)
+	#converter a lista para lista de listas
+	#contador = 0
+	#copy_distancias = copy.deepcopy(distancias)
+	#listoflist = []
+	#list = []
+	#list_distancias = []
+	#for i in range(len(distancias)):
+	#	list_distancias.append(copy_distancias[i])
+	#	contador = contador +1
+	#	if contador==coluna:
+	#		list = copy.deepcopy(list_distancias)
+	#		listoflist.append(list)
+	#		list_distancias[:]=[]
+	#		contador=0
 
-	dist_matriz.append(dist_euclidiana(pesos[0], pesos[3]))
-	neuronio.append(0)
-	neuronio_comp.append(4)
-	dist_matriz.append(dist_euclidiana(pesos[1], pesos[4]))
-	neuronio.append(1)
-	neuronio_comp.append(4)
-	dist_matriz.append(dist_euclidiana(pesos[2], pesos[5]))
-	neuronio.append(2)
-	neuronio_comp.append(5)
+	#converter para a grade:
+	print(neuronio_x, neuronio_y, distancias)
+	x = [0,1,0,2,1,2,0,1,0,2,1,2,0,1,2]
+	y = [0,0,1,0,1,1,2,2,3,2,3,3,4,4,4]
+	x = np.array(x)
+	y = np.array(y)
+	z = np.array(distancias)
+	print(neuronio_x, neuronio_y, distancias)
+	df = pd.DataFrame.from_dict(np.array([x,y,z]).T)
+	df.columns = ['neuronio_x','neuronio_y','distancia']
+	df['distancia'] = pd.to_numeric(df['distancia'])
 
-	dist_matriz.append(dist_euclidiana(pesos[3], pesos[3]))
-	neuronio.append(3)
-	neuronio_comp.append(3)
-	dist_matriz.append(dist_euclidiana(pesos[3], pesos[4]))
-	neuronio.append(3)
-	neuronio_comp.append(4)
-	dist_matriz.append(dist_euclidiana(pesos[4], pesos[5]))
-	neuronio.append(4)
-	neuronio_comp.append(5)
-
-	dist_matriz.append(dist_euclidiana(pesos[3], pesos[6]))
-	neuronio.append(3)
-	neuronio_comp.append(6)
-	dist_matriz.append(dist_euclidiana(pesos[4], pesos[7]))
-	neuronio.append(4)
-	neuronio_comp.append(7)
-	dist_matriz.append(dist_euclidiana(pesos[5], pesos[8]))
-	neuronio.append(6)
-	neuronio_comp.append(8)
-
-	dist_matriz.append(dist_euclidiana(pesos[6], pesos[6]))
-	neuronio.append(6)
-	neuronio_comp.append(6)
-	dist_matriz.append(dist_euclidiana(pesos[6], pesos[7]))
-	neuronio.append(6)
-	neuronio_comp.append(7)
-	dist_matriz.append(dist_euclidiana(pesos[7], pesos[8]))
-	neuronio.append(7)
-	neuronio_comp.append(8)
-
-	df = pd.DataFrame({'neuronio': neuronio, 'neuronio comparado': neuronio_comp, 'distancia': dist_matriz})
-	ax = df.plot.hexbin(x='neuronio', y='neuronio comparado', C='distancia', gridsize=10, cmap="viridis")
+	pivotted= df.pivot('neuronio_x','neuronio_y','distancia')
+	sns.heatmap(pivotted,cmap='RdBu')
 	plt.show()
+
+	print(neuronio_x, neuronio_y, distancias)
 
 def main():
 	dados = lerArquivo('dadosteste.csv')
@@ -234,6 +240,6 @@ def main():
 	#print ('pesos: ', pesos)
 
 	#plot3d(pesos, dados)
-	plotMatrizU(pesos, n_colunas)
+	plotMatrizU(pesos, coluna, linha)
 
 main()
