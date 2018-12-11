@@ -66,24 +66,55 @@ def dist_euclidiana (ponto1, ponto2):
 def calcularDistanciaGrade(pesos, linha, coluna, distancias, neuronio_x, neuronio_y):
 	#calcula distancia entre vizinhos na seguinte sequencia: para o lado, para baixo
 
-	for i in range(len(pesos)):
-		print(pesos[i])
+	#for i in range(len(pesos)):
+	#	print(pesos[i])
+	aux1 = 0
 
-	for i in range(len(pesos)):
+	for i in range (linha+linha-1):
+		for j in range (coluna+coluna-1):
+			if (i%2==0 and j%2==0):
+				distancias.append(0)
+			elif (i%2==0 and j%2==1):
+				value = dist_euclidiana(pesos[aux1], pesos[aux1+1])
+				distancias.append(value)
+				aux1 = aux1 + 1
+			elif (i%2==1 and j%2==0):
+				distancias.append(dist_euclidiana(pesos[aux1], pesos[aux1-coluna]))
+				aux1 = aux1 + 1
+			else:
+				distancias.append(0)
+
+			if (j==coluna+coluna-2): # pq é o ultimo da linha então não terá vizinho para calcular
+				au1x = aux1 + 1
+
+			neuronio_x.append(i)
+			neuronio_y.append(j)
+
+	aux = 0
+	for i in range (linha+linha-1):
+		sum = 0 #calcula a media das distancias entre os grupos
+		for j in range (coluna+coluna-1):
+			if (i%2==1 and j%2==1):
+				sum = distancias[aux]+distancias[aux+2]+distancias[aux+coluna-1]+distancias[aux+coluna+2]+distancias[aux+coluna+coluna-1]
+				distancia[i][j].append(sum/4)
+				aux = aux + 1
+		if (i%2==0 and i!=0):
+			aux = aux + coluna + 1 #acabou a linha
+
+	'''for i in range(len(pesos)):
 		if i%coluna==0: #se o elemento é ele mesmo
 			distancias.append(0)
-			neuronio_x.append(i)
-			neuronio_y.append(i)
-
+			neuronio_x.append(i%coluna)
+			neuronio_y.append(i/2)
 		if ((i+1)%coluna)!=0 and i+1<linha*coluna: #distancia para o ponto do lado - se o proximo nao for na linha de baixo ou se é menor que o total de neuronios
 			#print(' pesos[i]', pesos[i],' pesos[i+1]) ', pesos[i+1])
 			distancias.append(dist_euclidiana(pesos[i], pesos[i+1]))
-			neuronio_x.append(i)
-			neuronio_y.append(i+1)
+			neuronio_x.append(i%coluna)
+			neuronio_y.append((i+1)/3)
 		if i+coluna<linha*coluna: #distancia para o ponto abaixo - só nao fará se o ponto estiver na ultima linha
 			distancias.append(dist_euclidiana(pesos[i], pesos[i+coluna]))
-			neuronio_x.append(i)
-			neuronio_y.append(i+coluna)
+			neuronio_x.append(i%coluna)
+			neuronio_y.append((i+coluna)/3)'''
 	#print ('distancia de casa ponto para os vizinhos: ', distancias)
 	#print ('neuronio_x ', neuronio_x, 'neuronio_y ', neuronio_y)
 
@@ -140,41 +171,25 @@ def plotMatrizU(pesos, coluna, linha):
 
 	distancias, neuronio_x, neuronio_y = calcularDistanciaGrade(pesos, coluna, linha, distancias, neuronio_x, neuronio_y)
 
-	#converter a lista para lista de listas
-	#contador = 0
-	#copy_distancias = copy.deepcopy(distancias)
-	#listoflist = []
-	#list = []
-	#list_distancias = []
-	#for i in range(len(distancias)):
-	#	list_distancias.append(copy_distancias[i])
-	#	contador = contador +1
-	#	if contador==coluna:
-	#		list = copy.deepcopy(list_distancias)
-	#		listoflist.append(list)
-	#		list_distancias[:]=[]
-	#		contador=0
+	print('x: ',neuronio_x)
+	print('y: ',neuronio_y)
 
-	#converter para a grade:
-	print(neuronio_x, neuronio_y, distancias)
-	x = [0,1,0,2,1,2,0,1,0,2,1,2,0,1,2]
-	y = [0,0,1,0,1,1,2,2,3,2,3,3,4,4,4]
 	x = np.array(x)
 	y = np.array(y)
 	z = np.array(distancias)
-	print(neuronio_x, neuronio_y, distancias)
+	#print(neuronio_x, neuronio_y, distancias)
 	df = pd.DataFrame.from_dict(np.array([x,y,z]).T)
 	df.columns = ['neuronio_x','neuronio_y','distancia']
 	df['distancia'] = pd.to_numeric(df['distancia'])
 
-	pivotted= df.pivot('neuronio_x','neuronio_y','distancia')
+	pivotted= df.pivot('neuronio_y','neuronio_x','distancia')
 	sns.heatmap(pivotted,cmap='RdBu')
 	plt.show()
 
 	print(neuronio_x, neuronio_y, distancias)
 
 def main():
-	dados = lerArquivo('dadosteste.csv')
+	dados = lerArquivo('dados1.csv')
 
 	#linha = int(input('Sua matriz será? linha = '))
 	linha = 3
@@ -188,7 +203,7 @@ def main():
 	print ("pesos: ", pesos)
 
 	interacoes = int(input('numero de interacoes = '))
-	print ("dados: ", dados)
+	#print ("dados: ", dados)
 
 	taxa_aprendizagem_inicial = 0.01
 	largura_inicial = init_largura(pesos) #A LARGURA AINDA É CONFORME OS VALORES DOS PESOS?
@@ -239,7 +254,7 @@ def main():
 
 	#print ('pesos: ', pesos)
 
-	#plot3d(pesos, dados)
+	plot3d(pesos, dados)
 	plotMatrizU(pesos, coluna, linha)
 
 main()
