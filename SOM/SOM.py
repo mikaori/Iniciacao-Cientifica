@@ -12,7 +12,7 @@ import seaborn as sns
 
 def lerArquivo(arquivo):
 	with open(arquivo, 'r') as arquivo:
-		leitor = csv.reader(arquivo, delimiter=',')
+		leitor = csv.reader(arquivo, delimiter = ',')
 		dados = []
 		for ponto in leitor:
 			dados.append(ponto)
@@ -34,25 +34,25 @@ def gerar_grade (linhas, colunas):
 	return matriz
 
 def init_pesos(linhas, colunas, dados):
-	matriz= [[] for i in range(linhas)]
+	matriz = [[] for i in range(linhas)]
 	aux = copy.deepcopy(dados)
-	matriz=r.sample(aux, linhas*colunas)
+	matriz = r.sample(aux, linhas * colunas)
 	return matriz
 
 def init_grade(linhas, colunas, matriz):
 	contador = 0
 	for j in range (linhas):
 		for k in range (colunas):
-			px=j
-			py=k
+			px = j
+			py = k
 
 			#print('px',j,'py',k)
 			#calculando a distancia do ponto da matriz para o restante
 			for x in range (linhas):
 				for y in range (colunas):
-					distManhattan=abs(px-x)+abs(py-y)
+					distManhattan = abs(px - x) + abs(py - y)
 					matriz[contador].append(distManhattan)
-			contador=contador+1
+			contador = contador + 1
 			#print(matriz)
 
 	return (matriz)
@@ -64,57 +64,39 @@ def dist_euclidiana (ponto1, ponto2):
 	return math.sqrt(soma)
 
 def calcularDistanciaGrade(pesos, linha, coluna, distancias, neuronio_x, neuronio_y):
-	#calcula distancia entre vizinhos na seguinte sequencia: para o lado, para baixo
+	aux1 = 0 #para linhas pares
+	aux2 = 0 #para linhas impares
 
-	#for i in range(len(pesos)):
-	#	print(pesos[i])
-	aux1 = 0
+	for i in range (linha + linha - 1):
+		if (i == 0):
+			aux1 = 0
+		elif (i%2 == 1): #se a linha é impar
+			aux2 = coluna * i
 
-	for i in range (linha+linha-1):
-		for j in range (coluna+coluna-1):
-			if (i%2==0 and j%2==0):
+		for j in range (coluna + coluna - 1):
+			if (i%2 == 0 and j%2 == 0): #linha par e coluna par significa que é neuronio
 				distancias.append(0)
-			elif (i%2==0 and j%2==1):
-				value = dist_euclidiana(pesos[aux1], pesos[aux1+1])
+			elif (i%2 == 0 and j%2 == 1): #linha par e coluna impar então deve-se calcular a distancia entre os neuronios i e i+1
+				value = dist_euclidiana(pesos[aux1], pesos[aux1 + 1])
 				distancias.append(value)
 				aux1 = aux1 + 1
-			elif (i%2==1 and j%2==0):
-				distancias.append(dist_euclidiana(pesos[aux1], pesos[aux1-coluna]))
-				aux1 = aux1 + 1
-			else:
-				distancias.append(0)
-
-			if (j==coluna+coluna-2): # pq é o ultimo da linha então não terá vizinho para calcular
-				au1x = aux1 + 1
+			elif (i%2 == 1 and j%2 == 0): #linha impar e coluna par: calcular a distancia entre o neuronio e o vizinho abaixo
+				distancias.append(dist_euclidiana(pesos[aux1], pesos[aux1 - coluna]))
+				aux2 = aux2 + 1
+			else: #se nao for nenhum acima, então é para calcular a media entre as distancias dos 4 neuronios ao redor
+				distancias.append('x')
 
 			neuronio_x.append(i)
 			neuronio_y.append(j)
 
-	aux = 0
-	for i in range (linha+linha-1):
-		sum = 0 #calcula a media das distancias entre os grupos
-		for j in range (coluna+coluna-1):
-			if (i%2==1 and j%2==1):
-				sum = distancias[aux]+distancias[aux+2]+distancias[aux+coluna-1]+distancias[aux+coluna+2]+distancias[aux+coluna+coluna-1]
-				distancia[i][j].append(sum/4)
-				aux = aux + 1
-		if (i%2==0 and i!=0):
-			aux = aux + coluna + 1 #acabou a linha
+	#print(distancias)
 
-	'''for i in range(len(pesos)):
-		if i%coluna==0: #se o elemento é ele mesmo
-			distancias.append(0)
-			neuronio_x.append(i%coluna)
-			neuronio_y.append(i/2)
-		if ((i+1)%coluna)!=0 and i+1<linha*coluna: #distancia para o ponto do lado - se o proximo nao for na linha de baixo ou se é menor que o total de neuronios
-			#print(' pesos[i]', pesos[i],' pesos[i+1]) ', pesos[i+1])
-			distancias.append(dist_euclidiana(pesos[i], pesos[i+1]))
-			neuronio_x.append(i%coluna)
-			neuronio_y.append((i+1)/3)
-		if i+coluna<linha*coluna: #distancia para o ponto abaixo - só nao fará se o ponto estiver na ultima linha
-			distancias.append(dist_euclidiana(pesos[i], pesos[i+coluna]))
-			neuronio_x.append(i%coluna)
-			neuronio_y.append((i+coluna)/3)'''
+	for i in range(len(distancias)): #calculando a media das distancias dos 4 neuronios ao redor
+		if (distancias[i]=='x'):
+			sum = distancias[i-(coluna + coluna - 1)] + distancias[i + (coluna + coluna - 1)] + distancias[i + 1] + distancias[i - 1]
+			media = sum/4
+			distancias[i] = media
+
 	#print ('distancia de casa ponto para os vizinhos: ', distancias)
 	#print ('neuronio_x ', neuronio_x, 'neuronio_y ', neuronio_y)
 
@@ -124,7 +106,7 @@ def comparaValores(lista, valor):
 	index = 0;
 	for i in range(len(lista)):
 		if lista[i] == valor:
-			index=i
+			index = i
 	return index
 
 def d_largura(largura_inicial, i, cte_tempo):
@@ -156,12 +138,12 @@ def init_largura(pesos): #como achar a largura da grade? li que era o "raio"
 
 def plot3d(dados, pesos):
 	fig = plt.figure()
-	ax = fig.add_subplot(111, projection='3d')
+	ax = fig.add_subplot(111, projection = '3d')
 
-	dados = pd.DataFrame(dados, columns=["x", "y", "z"])
-	pesos = pd.DataFrame(pesos, columns=["x", "y", "z"])
+	dados = pd.DataFrame(dados, columns = ["x", "y", "z"])
+	pesos = pd.DataFrame(pesos, columns = ["x", "y", "z"])
 	ax.scatter(pesos.x, pesos.y, pesos.z)
-	ax.scatter(dados.x, dados.y, dados.z, c='r', marker='d')
+	ax.scatter(dados.x, dados.y, dados.z, c = 'r', marker = 'd')
 	plt.show()
 
 def plotMatrizU(pesos, coluna, linha):
@@ -171,36 +153,36 @@ def plotMatrizU(pesos, coluna, linha):
 
 	distancias, neuronio_x, neuronio_y = calcularDistanciaGrade(pesos, coluna, linha, distancias, neuronio_x, neuronio_y)
 
-	print('x: ',neuronio_x)
-	print('y: ',neuronio_y)
+	#print('x: ',neuronio_x)
+	#print('y: ',neuronio_y)
 
-	x = np.array(x)
-	y = np.array(y)
-	z = np.array(distancias)
+	neuronio_x = np.array(neuronio_x)
+	neuronio_y = np.array(neuronio_y)
+	distancias = np.array(distancias)
 	#print(neuronio_x, neuronio_y, distancias)
-	df = pd.DataFrame.from_dict(np.array([x,y,z]).T)
-	df.columns = ['neuronio_x','neuronio_y','distancia']
+	df = pd.DataFrame.from_dict(np.array([neuronio_x, neuronio_y, distancias]).T)
+	df.columns = ['neuronio_x', 'neuronio_y', 'distancia']
 	df['distancia'] = pd.to_numeric(df['distancia'])
 
-	pivotted= df.pivot('neuronio_y','neuronio_x','distancia')
-	sns.heatmap(pivotted,cmap='RdBu')
+	pivotted= df.pivot('neuronio_y' ,'neuronio_x', 'distancia')
+	sns.heatmap(pivotted, cmap='cool')
 	plt.show()
 
-	print(neuronio_x, neuronio_y, distancias)
+	#print(neuronio_x, neuronio_y, distancias)
 
 def main():
 	dados = lerArquivo('dados1.csv')
 
-	#linha = int(input('Sua matriz será? linha = '))
-	linha = 3
-	#coluna = int(input('coluna = '))
-	coluna = 3
+	linha = int(input('Sua matriz será? linha = '))
+	#linha = 3
+	coluna = int(input('coluna = '))
+	#coluna = 3
 
 	grade = gerar_grade(linha, coluna)
 	init_grade(linha, coluna, grade)
 
 	pesos = init_pesos(linha, coluna, dados)
-	print ("pesos: ", pesos)
+	#print ("pesos: ", pesos)
 
 	interacoes = int(input('numero de interacoes = '))
 	#print ("dados: ", dados)
@@ -211,7 +193,7 @@ def main():
 	largura = largura_inicial
 	contador = 0
 	n_colunas = len(dados[0])
-	index=0
+	index = 0
 
 	for j in range(interacoes):
 
@@ -239,7 +221,7 @@ def main():
 						for n in range(n_colunas): #quero o numero de colunas de um ponto
 							w = pesos[valor]
 							#print("w = ", w)
-							pesos[valor][n] = w[n]+(taxa_aprendizagem*influencia*(dadosSortidos[i%len(dados)][n]-w[n]))
+							pesos[valor][n] = w[n] + (taxa_aprendizagem * influencia * (dadosSortidos[i%len(dados)][n] - w[n]))
 							#print("novos pesos: ", pesos[i])
 
 				#print("\n 3 dados: ", dados, " pesos: ", pesos)
