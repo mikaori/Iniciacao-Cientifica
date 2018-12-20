@@ -64,14 +64,20 @@ def dist_euclidiana (ponto1, ponto2):
 	return math.sqrt(soma)
 
 def calcularDistanciaGrade(pesos, linha, coluna, distancias, neuronio_x, neuronio_y):
-	aux1 = 0 #para linhas pares
-	aux2 = 0 #para linhas impares
+	contador = 0 #quantidade de iteracoes
+	aux1 = 0
+	aux2 = 0
+
+	for i in range (len(pesos)):
+		for j in range (len(pesos)):
+			print (dist_euclidiana(pesos[i], pesos[j]))
 
 	for i in range (linha + linha - 1):
 		if (i == 0):
 			aux1 = 0
-		elif (i%2 == 1): #se a linha é impar
-			aux2 = coluna * i
+		elif (i%2 == 1 and i!=1): #se a linha é impar
+			contador=contador+1
+			aux2 = coluna * contador
 
 		for j in range (coluna + coluna - 1):
 			if (i%2 == 0 and j%2 == 0): #linha par e coluna par significa que é neuronio
@@ -81,13 +87,16 @@ def calcularDistanciaGrade(pesos, linha, coluna, distancias, neuronio_x, neuroni
 				distancias.append(value)
 				aux1 = aux1 + 1
 			elif (i%2 == 1 and j%2 == 0): #linha impar e coluna par: calcular a distancia entre o neuronio e o vizinho abaixo
-				distancias.append(dist_euclidiana(pesos[aux1], pesos[aux1 - coluna]))
+				distancias.append(dist_euclidiana(pesos[aux2], pesos[aux2 - coluna]))
+				print (aux2)
 				aux2 = aux2 + 1
 			else: #se nao for nenhum acima, então é para calcular a media entre as distancias dos 4 neuronios ao redor
 				distancias.append('x')
 
 			neuronio_x.append(i)
 			neuronio_y.append(j)
+
+	print(neuronio_x,neuronio_y, distancias)
 
 	#print(distancias)
 
@@ -112,8 +121,8 @@ def comparaValores(lista, valor):
 def d_largura(largura_inicial, i, cte_tempo):
 	return largura_inicial * math.exp(-i / cte_tempo)
 
-def d_taxa_aprendizado(taxa_aprendizado_inicial, i, interacoes):
-	return taxa_aprendizado_inicial * math.exp(-i / interacoes)
+def d_taxa_aprendizado(taxa_aprendizado_inicial, i, iteracoes):
+	return taxa_aprendizado_inicial * math.exp(-i / iteracoes)
 
 def att_vizinhanca(distancia, largura): #o quanto cada neuronio sofrerá com o reajuste dos pesos
 	return math.exp(-(distancia**2) / (2* (largura**2)))
@@ -160,8 +169,8 @@ def plotMatrizU(pesos, coluna, linha):
 	neuronio_y = np.array(neuronio_y)
 	distancias = np.array(distancias)
 	#print(neuronio_x, neuronio_y, distancias)
-	df = pd.DataFrame.from_dict(np.array([neuronio_x, neuronio_y, distancias]).T)
-	df.columns = ['neuronio_x', 'neuronio_y', 'distancia']
+	df = pd.DataFrame.from_dict(np.array([neuronio_y, neuronio_x, distancias]).T)
+	df.columns = ['neuronio_y', 'neuronio_x', 'distancia']
 	df['distancia'] = pd.to_numeric(df['distancia'])
 
 	pivotted= df.pivot('neuronio_y' ,'neuronio_x', 'distancia')
@@ -180,11 +189,12 @@ def main():
 
 	grade = gerar_grade(linha, coluna)
 	init_grade(linha, coluna, grade)
+	print (grade)
 
 	pesos = init_pesos(linha, coluna, dados)
 	#print ("pesos: ", pesos)
 
-	interacoes = int(input('numero de interacoes = '))
+	iteracoes = int(input('numero de iteracoes = '))
 	#print ("dados: ", dados)
 
 	taxa_aprendizagem_inicial = 0.01
@@ -195,7 +205,7 @@ def main():
 	n_colunas = len(dados[0])
 	index = 0
 
-	for j in range(interacoes):
+	for j in range(iteracoes):
 
 		if j==0 or j%len(dados)==1:
 			dadosSortidos = copy.deepcopy(dados)
@@ -226,11 +236,11 @@ def main():
 
 				#print("\n 3 dados: ", dados, " pesos: ", pesos)
 			#ATUALIZANDO TAXA DE APRENDIZAGEM
-			taxa_aprendizagem = d_taxa_aprendizado(taxa_aprendizagem_inicial, i, interacoes)
+			taxa_aprendizagem = d_taxa_aprendizado(taxa_aprendizagem_inicial, i, iteracoes)
 			#print("taxa aprendizagem: ",taxa_aprendizagem)
 
 			#ATUALIZANDO LARGURA
-			largura = d_largura(largura_inicial, i, interacoes)
+			largura = d_largura(largura_inicial, i, iteracoes)
 			#print("largura: ", largura)
 			#print(dados)
 
