@@ -6,7 +6,6 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
 import numpy as np
-from pandas.plotting import scatter_matrix
 import copy
 import seaborn as sns
 
@@ -68,27 +67,29 @@ def calcularDistanciaGrade(pesos, linha, coluna, distancias, neuronio_x, neuroni
 	aux1 = 0
 	aux2 = 0
 
+	#printa matriz de distancias
 	for i in range (len(pesos)):
 		for j in range (len(pesos)):
-			print (dist_euclidiana(pesos[i], pesos[j]))
+			print (" %.2f" % dist_euclidiana(pesos[i], pesos[j]), end= '')
+		print()
 
 	for i in range (linha + linha - 1):
-		if (i == 0):
-			aux1 = 0
-		elif (i%2 == 1 and i!=1): #se a linha é impar
-			contador=contador+1
+		if (i%2 == 0 and i!=0):
+			aux1 = aux1 + 1
+
+		if (i%2 == 1 and i != 1): #se a linha é impar
+			contador = contador + 1
 			aux2 = coluna * contador
 
 		for j in range (coluna + coluna - 1):
 			if (i%2 == 0 and j%2 == 0): #linha par e coluna par significa que é neuronio
 				distancias.append(0)
 			elif (i%2 == 0 and j%2 == 1): #linha par e coluna impar então deve-se calcular a distancia entre os neuronios i e i+1
-				value = dist_euclidiana(pesos[aux1], pesos[aux1 + 1])
-				distancias.append(value)
+				distancias.append(dist_euclidiana(pesos[aux1], pesos[aux1 + 1]))
 				aux1 = aux1 + 1
 			elif (i%2 == 1 and j%2 == 0): #linha impar e coluna par: calcular a distancia entre o neuronio e o vizinho abaixo
-				distancias.append(dist_euclidiana(pesos[aux2], pesos[aux2 - coluna]))
-				print (aux2)
+				distancias.append(dist_euclidiana(pesos[aux2], pesos[aux2 + coluna]))
+				#print (aux2)
 				aux2 = aux2 + 1
 			else: #se nao for nenhum acima, então é para calcular a media entre as distancias dos 4 neuronios ao redor
 				distancias.append('x')
@@ -96,9 +97,10 @@ def calcularDistanciaGrade(pesos, linha, coluna, distancias, neuronio_x, neuroni
 			neuronio_x.append(i)
 			neuronio_y.append(j)
 
-	print(neuronio_x,neuronio_y, distancias)
-
-	#print(distancias)
+	print(neuronio_x)
+	print(neuronio_y)
+	print(distancias)
+	#print(pesos)
 
 	for i in range(len(distancias)): #calculando a media das distancias dos 4 neuronios ao redor
 		if (distancias[i]=='x'):
@@ -189,7 +191,7 @@ def main():
 
 	grade = gerar_grade(linha, coluna)
 	init_grade(linha, coluna, grade)
-	print (grade)
+	#print (grade)
 
 	pesos = init_pesos(linha, coluna, dados)
 	#print ("pesos: ", pesos)
@@ -197,10 +199,11 @@ def main():
 	iteracoes = int(input('numero de iteracoes = '))
 	#print ("dados: ", dados)
 
-	taxa_aprendizagem_inicial = 0.01
-	largura_inicial = init_largura(pesos) #A LARGURA AINDA É CONFORME OS VALORES DOS PESOS?
+	taxa_aprendizagem_inicial = 0.001
+	largura_inicial = init_largura(pesos)
+	#print(largura_inicial)
 	taxa_aprendizagem = taxa_aprendizagem_inicial
-	largura = largura_inicial
+	largura = largura_inicial/3
 	contador = 0
 	n_colunas = len(dados[0])
 	index = 0
