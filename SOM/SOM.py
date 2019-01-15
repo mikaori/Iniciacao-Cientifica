@@ -68,10 +68,10 @@ def calcularDistanciaGrade(pesos, linha, coluna, distancias, neuronio_x, neuroni
 	aux2 = 0
 
 	#printa matriz de distancias
-	for i in range (len(pesos)):
+	'''for i in range (len(pesos)):
 		for j in range (len(pesos)):
 			print (" %.2f" % dist_euclidiana(pesos[i], pesos[j]), end= '')
-		print()
+		print()'''
 
 	for i in range (linha + linha - 1):
 		if (i%2 == 0 and i!=0):
@@ -97,9 +97,9 @@ def calcularDistanciaGrade(pesos, linha, coluna, distancias, neuronio_x, neuroni
 			neuronio_x.append(i)
 			neuronio_y.append(j)
 
-	print(neuronio_x)
-	print(neuronio_y)
-	print(distancias)
+	#print(neuronio_x)
+	#print(neuronio_y)
+	#print(distancias)
 	#print(pesos)
 
 	for i in range(len(distancias)): #calculando a media das distancias dos 4 neuronios ao redor
@@ -120,8 +120,8 @@ def comparaValores(lista, valor):
 			index = i
 	return index
 
-def d_largura(largura_inicial, i, cte_tempo):
-	return largura_inicial * math.exp(-i / cte_tempo)
+def d_largura(largura_inicial, i, iteracoes):
+	return largura_inicial * math.exp(-i / math.log(largura_inicial))
 
 def d_taxa_aprendizado(taxa_aprendizado_inicial, i, iteracoes):
 	return taxa_aprendizado_inicial * math.exp(-i / iteracoes)
@@ -133,17 +133,17 @@ def AcharMatch(peso, x): #busca neuronio vencedor
 	distancia = []
 	for i in range(len(peso)):
 		distancia.append(dist_euclidiana(peso[i], x)) #adiciona a distancia entre cada peso e dado
-	index= comparaValores(distancia, min(distancia)) #O menor valor de totdist será o neuronio vencedor
+	index= comparaValores(distancia, min(distancia)) #O menor valor será o neuronio vencedor
 	return peso[index]
 
-def init_largura(pesos): #como achar a largura da grade? li que era o "raio"
+def init_largura(grade):
 	sum_peso = []
-	for i in range(len(pesos)):
-		sum_peso.append(sum(pesos[i]))
+	for i in range(len(grade)):
+		sum_peso.append(sum(grade[i]))
 	index = comparaValores(sum_peso, max(sum_peso)) #maior ponto mais distante
-	maior_valor = pesos[index]
+	maior_valor = grade[index]
 	index = comparaValores(sum_peso, min(sum_peso)) #menor ponto mais distante
-	menor_valor = pesos[index]
+	menor_valor = grade[index]
 	largura = (dist_euclidiana(maior_valor, menor_valor))/2
 	return (dist_euclidiana(maior_valor, menor_valor))/2
 
@@ -182,12 +182,12 @@ def plotMatrizU(pesos, coluna, linha):
 	#print(neuronio_x, neuronio_y, distancias)
 
 def main():
-	dados = lerArquivo('dados1.csv')
+	dados = lerArquivo('n_dimensional.csv')
 
-	linha = int(input('Sua matriz será? linha = '))
-	#linha = 3
-	coluna = int(input('coluna = '))
-	#coluna = 3
+	#linha = int(input('Sua matriz será? linha = '))
+	linha = 6
+	#coluna = int(input('coluna = '))
+	coluna = 6
 
 	grade = gerar_grade(linha, coluna)
 	init_grade(linha, coluna, grade)
@@ -196,14 +196,16 @@ def main():
 	pesos = init_pesos(linha, coluna, dados)
 	#print ("pesos: ", pesos)
 
-	iteracoes = int(input('numero de iteracoes = '))
+	#iteracoes = int(input('numero de iteracoes = '))
+	iteracoes = 500
+	
 	#print ("dados: ", dados)
 
-	taxa_aprendizagem_inicial = 0.001
+	taxa_aprendizagem_inicial = 0.1
 	largura_inicial = init_largura(pesos)
 	#print(largura_inicial)
 	taxa_aprendizagem = taxa_aprendizagem_inicial
-	largura = largura_inicial/3
+	largura = largura_inicial
 	contador = 0
 	n_colunas = len(dados[0])
 	index = 0
@@ -249,7 +251,7 @@ def main():
 
 	#print ('pesos: ', pesos)
 
-	plot3d(pesos, dados)
+	#plot3d(pesos, dados)
 	plotMatrizU(pesos, coluna, linha)
 
 main()
