@@ -57,6 +57,7 @@ def init_grade(linhas, colunas, matriz):
 	return (matriz)
 
 def dist_euclidiana (ponto1, ponto2):
+	#print ('distancia euclidiana',ponto1, ' ', ponto2)
 	dimensao, soma = len(ponto1), 0
 	for i in range(dimensao):
 		soma += math.pow(ponto1[i] - ponto2[i], 2)
@@ -181,13 +182,89 @@ def plotMatrizU(pesos, coluna, linha):
 
 	#print(neuronio_x, neuronio_y, distancias)
 
+def calcularPontoMedio(lista, colunas):
+	somaColunas,pontoMedio=[], []
+	tam=len(lista)
+	for i in range(colunas):
+		somaColunas=sumColumn(lista)
+		pontoMedio.append(somaColunas[i]/tam)
+	return(pontoMedio)
+
+def sumColumn(matrix):
+	return np.sum(matrix, axis=0)
+
+def clustering (dados, pesos):
+	cluster = []
+	minDist = []
+
+	for i in range (len(dados)):
+		d = []
+		for j in range (len(pesos)):
+				d.append(dist_euclidiana(dados[i], pesos[j]))
+		minDist.append(min(d)) #menor distancia entre os dados e o ponto
+		cluster.append(comparaValores (d, min(d))) #guarda o indice do peso da menor distancia encontrada
+
+	#print (pesos)
+	#print (len(cluster))
+	#print (len(minDist))
+
+	clusterizado = [[] for i in range(len(pesos))]
+
+	sum1 = 0
+	sum2 = 0
+	total1 = 1
+	total2 = 1
+	#media1 = 0
+	#media2 = 0
+
+	for i in range(0,len(pesos)):
+		if pesos[i]!=0:
+			for j in range(len(cluster)): #calcula soma das distancias média
+				if cluster[j]==i:
+					sum1 = sum1 + minDist[j]
+					total1 = total1 + 1
+			media1 = sum1/total1
+			for k in range(1,len(pesos)):
+				if pesos[k]!=0 and pesos[i]!=0:
+					for j in range(len(cluster)): #calcula soma das distancias média
+						if cluster[j]==k:
+							sum2 = sum2 + minDist[j]
+							total2 = total2 + 1
+					media2 = sum2/total2
+					d = dist_euclidiana(pesos[i], pesos[k])
+					if d < (media1 + media2):
+						#atualiza os dados só se entrar no if
+						for m in range(len(cluster)):
+							if k == cluster[m]:
+								cluster[m] = i
+								#print(dados)
+								#print ('dados ', dados[m])
+								#print ('peso ',pesos[i])
+								minDist[m] = dist_euclidiana(dados[m], pesos[i])
+						pesos[k] = 0
+
+	val_remove = 0
+	#filter(lambda a: a != val_remove, pesos)
+	while val_remove in pesos:
+		pesos.remove(val_remove)
+
+	print (minDist)
+	#print (len(minDist))
+	print(cluster)
+	#print (len(cluster))
+	#print('pesos', pesos)
+	#print(clusterizado)
+
+	plot3d(dados, pesos)
+
+
 def main():
-	dados = lerArquivo('n_dimensional.csv')
+	dados = lerArquivo('dados1.csv')
 
 	#linha = int(input('Sua matriz será? linha = '))
-	linha = 6
+	linha = 3
 	#coluna = int(input('coluna = '))
-	coluna = 6
+	coluna = 3
 
 	grade = gerar_grade(linha, coluna)
 	init_grade(linha, coluna, grade)
@@ -197,8 +274,8 @@ def main():
 	#print ("pesos: ", pesos)
 
 	#iteracoes = int(input('numero de iteracoes = '))
-	iteracoes = 500
-	
+	iteracoes = 20
+
 	#print ("dados: ", dados)
 
 	taxa_aprendizagem_inicial = 0.1
@@ -209,20 +286,24 @@ def main():
 	contador = 0
 	n_colunas = len(dados[0])
 	index = 0
+	len_dados = len(dados)
+	#print (len_dados)
+	len_pesos = len(pesos)
+	#print(len_pesos)
 
 	for j in range(iteracoes):
 
-		if j==0 or j%len(dados)==1:
+		if j==0 or j%len_dados==1:
 			dadosSortidos = copy.deepcopy(dados)
 			r.shuffle(dadosSortidos)
 
 		#inicializando valores iniciais
-		for i in range(len(dados)):
-			neuronio_vencedor = AcharMatch (pesos, dadosSortidos[i%len(dados)])
+		for i in range(len_dados):
+			neuronio_vencedor = AcharMatch (pesos, dadosSortidos[i%len_dados])
 			#print ("neuronio_vencedor: ", neuronio_vencedor)
 			#print ("index: ",index)
 			#CALCULANDO DISTANCIA LATERAL - dist do neuronio_vencedor para os outros
-			for valor in range(len(pesos)):
+			for valor in range(len_pesos):
 				#print("pesos ", pesos[valor], "neuronio_vencedor: ", neuronio_vencedor)
 				valor_distancia = dist_euclidiana(neuronio_vencedor, pesos[valor])
 				#print("\n 2 dados: ", dados, " pesos: ", pesos)
@@ -236,7 +317,7 @@ def main():
 						for n in range(n_colunas): #quero o numero de colunas de um ponto
 							w = pesos[valor]
 							#print("w = ", w)
-							pesos[valor][n] = w[n] + (taxa_aprendizagem * influencia * (dadosSortidos[i%len(dados)][n] - w[n]))
+							pesos[valor][n] = w[n] + (taxa_aprendizagem * influencia * (dadosSortidos[i%len_dados][n] - w[n]))
 							#print("novos pesos: ", pesos[i])
 
 				#print("\n 3 dados: ", dados, " pesos: ", pesos)
@@ -252,6 +333,7 @@ def main():
 	#print ('pesos: ', pesos)
 
 	#plot3d(pesos, dados)
-	plotMatrizU(pesos, coluna, linha)
+	#plotMatrizU(pesos, coluna, linha)
+	clustering(dados, pesos)
 
 main()
