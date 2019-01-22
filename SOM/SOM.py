@@ -275,7 +275,7 @@ def main():
 
 	#print ("dados: ", dados)
 
-	taxa_aprendizagem_inicial = 0.1
+	taxa_aprendizagem_inicial = 0.3
 	largura_inicial = init_largura(pesos)
 	#print(largura_inicial)
 	taxa_aprendizagem = taxa_aprendizagem_inicial
@@ -319,11 +319,11 @@ def main():
 
 				#print("\n 3 dados: ", dados, " pesos: ", pesos)
 			#ATUALIZANDO TAXA DE APRENDIZAGEM
-			taxa_aprendizagem = d_taxa_aprendizado(taxa_aprendizagem_inicial, i, iteracoes)
+			taxa_aprendizagem = d_taxa_aprendizado(taxa_aprendizagem_inicial, j*len(dados)+(i+1), iteracoes)
 			#print("taxa aprendizagem: ",taxa_aprendizagem)
 
 			#ATUALIZANDO LARGURA
-			largura = d_largura(largura_inicial, i, iteracoes)
+			largura = d_largura(largura_inicial, j*len(dados)+(i+1), iteracoes/math.log(largura_inicial))
 			#print("largura: ", largura)
 			#print(dados)
 
