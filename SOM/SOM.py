@@ -200,32 +200,31 @@ def clustering (dados, pesos):
 	for i in range (len(dados)):
 		d = []
 		for j in range (len(pesos)):
-				d.append(dist_euclidiana(dados[i], pesos[j]))
-		minDist.append(min(d)) #menor distancia entre os dados e o ponto
-		cluster.append(comparaValores (d, min(d))) #guarda o indice do peso da menor distancia encontrada
+			d.append(dist_euclidiana(dados[i], pesos[j]))
+		menor = min(d)
+		minDist.append(menor) #menor distancia entre os dados e o ponto
+		cluster.append(comparaValores(d, menor)) #guarda o indice do peso da menor distancia encontrada
 
 	#print (pesos)
-	#print (len(cluster))
-	#print (len(minDist))
-
-	clusterizado = [[] for i in range(len(pesos))]
+	print (cluster)
+	print (minDist)
 
 	sum1 = 0
 	sum2 = 0
 	total1 = 1
 	total2 = 1
-	#media1 = 0
-	#media2 = 0
 
-	for i in range(0,len(pesos)):
-		if pesos[i]!=0:
+	for i in range(0,len(pesos)-1):
+		print ('peso[i]', pesos[i])
+		if pesos[i]!='x':
 			for j in range(len(cluster)): #calcula soma das distancias média
 				if cluster[j]==i:
 					sum1 = sum1 + minDist[j]
 					total1 = total1 + 1
 			media1 = sum1/total1
-			for k in range(1,len(pesos)):
-				if pesos[k]!=0 and pesos[i]!=0:
+
+			for k in range(i+1,len(pesos)):
+				if pesos[k]!='x':
 					for j in range(len(cluster)): #calcula soma das distancias média
 						if cluster[j]==k:
 							sum2 = sum2 + minDist[j]
@@ -241,22 +240,20 @@ def clustering (dados, pesos):
 								#print ('dados ', dados[m])
 								#print ('peso ',pesos[i])
 								minDist[m] = dist_euclidiana(dados[m], pesos[i])
-						pesos[k] = 0
-
-	val_remove = 0
-	#filter(lambda a: a != val_remove, pesos)
+						pesos[k] = 'x'
+	val_remove = 'x'
+	#pesos = filter(lambda a: a != val_remove, pesos)
 	while val_remove in pesos:
 		pesos.remove(val_remove)
 
-	print (minDist)
+	#print (minDist)
 	#print (len(minDist))
-	print(cluster)
+	#print(cluster)
 	#print (len(cluster))
-	#print('pesos', pesos)
+	print('pesos', pesos)
 	#print(clusterizado)
 
 	plot3d(dados, pesos)
-
 
 def main():
 	dados = lerArquivo('dados1.csv')
