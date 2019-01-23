@@ -122,7 +122,7 @@ def comparaValores(lista, valor):
 	return index
 
 def d_largura(largura_inicial, i, iteracoes):
-	return largura_inicial * math.exp(-i / math.log(largura_inicial))
+	return largura_inicial * math.exp(-i / iteracoes)
 
 def d_taxa_aprendizado(taxa_aprendizado_inicial, i, iteracoes):
 	return taxa_aprendizado_inicial * math.exp(-i / iteracoes)
@@ -329,8 +329,9 @@ def main():
 
 	#print ('pesos: ', pesos)
 
-	#plot3d(pesos, dados)
-	#plotMatrizU(pesos, coluna, linha)
+	plot3d(pesos, dados)
+	plotMatrizU(pesos, coluna, linha)
+
 	clustering(dados, pesos)
 
 main()
